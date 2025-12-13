@@ -1,6 +1,8 @@
-class DesktopApp {
+﻿class DesktopApp {
     constructor() {
       this.openWindows = new Set();
+      this.draggedWindow = null;
+      this.dragOffset = { x: 0, y: 0 };
       this.initializeDock();
     }
   
@@ -43,7 +45,7 @@ class DesktopApp {
   
       document.getElementById('windows-container').appendChild(window);
       this.openWindows.add(appName);
-  
+
       window.querySelector('.window-close').addEventListener('click', () => {
         this.closeWindow(appName);
       });
@@ -51,7 +53,8 @@ class DesktopApp {
       window.querySelector('.window-maximize').addEventListener('click', () => {
         this.toggleMaximize(window);
       });
-  
+
+      this.makeWindowDraggable(window);
     }
   
     closeWindow(appName) {
@@ -63,17 +66,52 @@ class DesktopApp {
       }
     }
 
-    toggleMaximize(window) {
-        if (window.classList.contains('maximized')) {
-          window.classList.remove('maximized');
-          window.style.removeProperty('top');
-          window.style.removeProperty('left');
-        } else {
-          window.classList.add('maximized');
-          window.style.removeProperty('top');
-          window.style.removeProperty('left');
-        }
-      }
+toggleMaximize(window) {
+  if (window.classList.contains('maximized')) {
+    window.classList.remove('maximized');
+    
+    if (window.dataset.wasDragged === 'true') {
+      window.style.top = window.dataset.originalTop;
+      window.style.left = window.dataset.originalLeft;
+      window.style.transform = 'none';
+    } else {
+      window.style.removeProperty('top');
+      window.style.removeProperty('left');
+      window.style.removeProperty('transform');
+    }
+  } else {
+    if (window.style.top) {
+      window.dataset.wasDragged = 'true';
+      window.dataset.originalTop = window.style.top;
+      window.dataset.originalLeft = window.style.left;
+    } else {
+      window.dataset.wasDragged = 'false';
+    }
+    
+    window.classList.add('maximized');
+    window.style.removeProperty('top');
+    window.style.removeProperty('left');
+    window.style.removeProperty('transform');
+  }
+}
+  
+    makeWindowDraggable(window) {
+      const header = window.querySelector('.window-header');
+      
+      header.addEventListener('mousedown', (e) => {
+        if (e.target.classList.contains('window-control')) return;
+        
+        this.draggedWindow = window;
+        const rect = window.getBoundingClientRect();
+
+        this.dragOffset.x = e.clientX - rect.left;
+        this.dragOffset.y = e.clientY - rect.top;
+
+        window.classList.add('dragging');
+        
+        e.preventDefault();
+      });
+    }
   
     getContentForApp(appName) {
       switch(appName) {
@@ -105,69 +143,191 @@ class DesktopApp {
               </div>
             </div>
           `;
-        case 'About Me':
-          return `
-            <div style="text-align: center">
-              <div style="width: 128px; height: 128px; background: #eee; border-radius: 50%; margin: 0 auto 16px;"></div>
-              <h2>Zheng Bo</h2>
-              <p>Game Developer</p>
-              <div style="margin-top: 24px; text-align: left;">
-                <h3>About Me</h3>
-                <p>NYP Game Development Student</p>
-                <h3>Skills</h3>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">JavaScript</span>
-                  <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">HTML</span>
-                  <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">CSS</span>
-                  <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">C++</span>
-                  <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">Java</span>
-                  <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">MySQL</span>
-                  <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">C#</span>
-                  <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">Unity</span>
-                </div>
+case 'About Me':
+  return `
+    <div style="text-align: center">
+      <h2>Zheng Bo</h2>
+      <p>Game Developer</p>
+
+      <div style="margin-top: 24px; text-align: left;">
+        <h3>About Me</h3>
+        <p>
+          I am a Game Development student at Nanyang Polytechnic with experience working on both
+          solo and team-based projects. I enjoy building gameplay
+          systems, experimenting with mechanics, and translating ideas into playable experiences.
+          My work spans Unity and Unreal Engine projects, covering areas such as gameplay programming,
+          collaboration in multidisciplinary teams, and iterative development.
+        </p>
+
+        <h3>Skills</h3>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">JavaScript</span>
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">HTML</span>
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">CSS</span>
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">C++</span>
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">Java</span>
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">MySQL</span>
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">C#</span>
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">Unity</span>
+          <span style="padding: 4px 12px; background: #f5f5f5; border-radius: 16px;">Unreal Engine</span>
+        </div>
+      </div>
+    </div>
+  `;
+    case 'My Projects':
+      return `
+        <div>
+          <h2 style="text-align:center">My Projects</h2>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px;">
+
+            <!-- Echoes Of Virtue -->
+            <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+              <h3>Echoes Of Virtue</h3>
+              <p>
+                A group project based around sustainability goals of peace, justice,
+                and strong institutions.
+              </p>
+
+              <h4>What I Did</h4>
+              <ul>
+                <li>Implemented player controller and core gameplay systems.</li>
+                <li>Built world-switching mechanics between past and future states.</li>
+                <li>Developed doors that transition between scenes.</li>
+                <li>Created enemies, moving platforms, and interactive elements.</li>
+                <li>Designed and built multiple gameplay levels.</li>
+              </ul>
+
+              <div style="display:flex; gap:8px;">
+                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
+                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
               </div>
+
+              <a href="https://www.youtube.com/watch?v=8CkgqogTGeM" target="_blank" rel="noopener">
+                <img src="https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg"
+                     style="width:100%; margin-top:12px; border-radius:8px;">
+              </a>
             </div>
-          `;
-          case 'My Projects':
-            return `
-              <div>
-                <h2 style="text-align: center">My Projects</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px;">
 
-                  <div style="padding: 16px; border: 1px solid #eee; border-radius: 8px;">
-                    <h3>Echoes Of Virtue</h3>
-                    <p>A group project based around sustainability goals of peace, justice, and strong institutions.</p>
-                    <div style="display: flex; gap: 8px; margin-top: 8px;">
-                      <span style="padding: 4px 8px; background: #f5f5f5; border-radius: 12px; font-size: 12px;">Unity</span>
-                      <span style="padding: 4px 8px; background: #f5f5f5; border-radius: 12px; font-size: 12px;">C#</span>
-                    </div>
-                    <div style="margin-top: 12px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-                      <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/8CkgqogTGeM" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                  </div>
+            <!-- Boat -->
+            <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+              <h3>Boat</h3>
+              <p>
+                A group project based on the open-world survival genre.
+              </p>
 
-                  <div style="padding: 16px; border: 1px solid #eee; border-radius: 8px;">
-                    <h3>Boat</h3>
-                    <p>A group project based on the OpenWorld Survival game genre.</p>
-                    <div style="display: flex; gap: 8px; margin-top: 8px;">
-                      <span style="padding: 4px 8px; background: #f5f5f5; border-radius: 12px; font-size: 12px;">C++</span>
-                      <span style="padding: 4px 8px; background: #f5f5f5; border-radius: 12px; font-size: 12px;">OpenGL</span>
-                    </div>
-                    <div style="margin-top: 12px; position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-                      <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/P6keUXjFF40" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                  </div>
+              <h4>What I Did</h4>
+              <ul>
+                <li>Designed and implemented the game UI.</li>
+                <li>Extended the framework’s scene manager to support multiple scenes.</li>
+                <li>Enabled parallel level development for open-world gameplay.</li>
+                <li>Created cutscenes and physics-based systems.</li>
+                <li>Designed and built the OilRig level.</li>
+              </ul>
 
-                </div>
+              <div style="display:flex; gap:8px;">
+                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C++</span>
+                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">OpenGL</span>
               </div>
-            `;
-        default:
-          return '<p>Content not available</p>';
-      }
-    }
+
+              <a href="https://www.youtube.com/watch?v=P6keUXjFF40" target="_blank" rel="noopener">
+                <img src="https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg"
+                     style="width:100%; margin-top:12px; border-radius:8px;">
+              </a>
+            </div>
+
+            <!-- Vestige -->
+            <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+              <h3>Vestige</h3>
+              <p>
+                A story-driven 3D side-scroller built in Unreal Engine,
+                focusing on dream-like environments and emotional progression.
+              </p>
+
+              <h4>What I Did</h4>
+              <ul>
+                <li>Implemented player movement including push/pull, hang, climb, and elevators.</li>
+                <li>Developed advanced camera systems with dead-zones, smoothing, and dynamic FOV.</li>
+                <li>Built interaction and item inspection systems.</li>
+                <li>Implemented quest system and full game UI.</li>
+                <li>Created saving and loading systems.</li>
+              </ul>
+
+              <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unreal Engine</span>
+
+              <a href="https://www.youtube.com/watch?v=ULQUVjG7M-s" target="_blank" rel="noopener">
+                <img src="https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg"
+                     style="width:100%; margin-top:12px; border-radius:8px;">
+              </a>
+            </div>
+
+            <!-- Into the Canvas -->
+            <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+              <h3>Into the Canvas</h3>
+              <p>
+                An internship couch co-op project where players use paint mechanics
+                to solve puzzles together.
+              </p>
+
+                <h4>What I Did</h4>
+                <ul>
+                  <li>Designed and implemented a modular UI system to support reusable menus and scalable UI flows.</li>
+                  <li>Built a custom UnityEvent-style system with an improved Inspector that supports multiple parameters.</li>
+                  <li>Developed custom toon shaders for 3D models.</li>
+                  <li>Integrated UI animations with polish effects such as gradient backgrounds and selection feedback.</li>
+                  <li>Implemented player stats and timer systems, along with game and audio settings menus.</li>
+                  <li>Added controller-friendly UX features including auto-scrolling settings navigation.</li>
+                  <li>Implemented procedural mesh destruction compatible with any mesh.</li>
+                  <li>Prototyped obstacle mechanics and player throwing trajectory, then handed off to a teammate for final integration.</li>
+                </ul>
+
+              <div style="display:flex; gap:8px;">
+                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
+                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
+                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Internship</span>
+              </div>
+
+              <a href="https://www.youtube.com/watch?v=kYTfj2U4430" target="_blank" rel="noopener">
+                <img src="https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg"
+                     style="width:100%; margin-top:12px; border-radius:8px;">
+              </a>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+    default:
+      return '<p>Content not available</p>';
   }
-  
-  // Initialize the desktop when the DOM is loaded
+}
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
-    new DesktopApp();
+    const app = new DesktopApp();
+
+    document.addEventListener('mousemove', (e) => {
+      if (app.draggedWindow) {
+        const x = e.clientX - app.dragOffset.x;
+        const y = e.clientY - app.dragOffset.y;
+        
+        const maxX = window.innerWidth - app.draggedWindow.offsetWidth;
+        const maxY = window.innerHeight - app.draggedWindow.offsetHeight;
+        
+        const boundedX = Math.max(0, Math.min(x, maxX));
+        const boundedY = Math.max(0, Math.min(y, maxY));
+        
+        app.draggedWindow.style.left = boundedX + 'px';
+        app.draggedWindow.style.top = boundedY + 'px';
+        app.draggedWindow.style.transform = 'none';
+        app.draggedWindow.style.right = 'auto';
+        app.draggedWindow.style.bottom = 'auto';
+      }
+    });
+    
+    document.addEventListener('mouseup', () => {
+      if (app.draggedWindow) {
+        app.draggedWindow.classList.remove('dragging');
+        app.draggedWindow = null;
+      }
+    });
   });

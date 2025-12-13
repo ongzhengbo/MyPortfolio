@@ -107,6 +107,20 @@ body {
     overflow: auto;
     max-height: calc(100vh - 100px);
   }
+
+.window.dragging {
+  opacity: 0.85;
+  transition: none;
+  cursor: grabbing;
+}
+
+.window-header {
+  cursor: grab;
+}
+
+.window-header:active {
+  cursor: grabbing;
+}
   
   /* Animations */
   @keyframes windowOpen {
