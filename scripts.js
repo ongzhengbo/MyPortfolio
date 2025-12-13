@@ -58,6 +58,12 @@
     toggle.addEventListener('click', () => {
       toggle.classList.toggle('active');
       toggle.nextElementSibling.classList.toggle('active');
+
+        const dockItem = document.querySelector(`.dock-item[data-app="${appName}"]`);
+  if (dockItem) {
+    dockItem.classList.add('active');
+  }
+
     });
   });
 
@@ -71,6 +77,13 @@
         window.remove();
         this.openWindows.delete(appName);
       }
+
+        const dockItem = document.querySelector(`.dock-item[data-app="${appName}"]`);
+  if (dockItem) {
+    dockItem.classList.remove('active');
+  }
+
+
     }
 
 toggleMaximize(window) {
