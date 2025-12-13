@@ -54,6 +54,13 @@
         this.toggleMaximize(window);
       });
 
+        window.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('active');
+      toggle.nextElementSibling.classList.toggle('active');
+    });
+  });
+
       this.makeWindowDraggable(window);
     }
   
@@ -174,21 +181,26 @@ case 'About Me':
       </div>
     </div>
   `;
-    case 'My Projects':
-      return `
-        <div>
-          <h2 style="text-align:center">My Projects</h2>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px;">
+case 'My Projects':
+  return `
+    <div>
+      <h2 style="text-align:center">My Projects</h2>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px;">
 
-            <!-- Echoes Of Virtue -->
-            <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
-              <h3>Echoes Of Virtue</h3>
-              <p>
-                A group project based around sustainability goals of peace, justice,
-                and strong institutions.
-              </p>
+        <!-- Echoes Of Virtue -->
+        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+          <h3>Echoes Of Virtue</h3>
+          <p>
+            A group project based around sustainability goals of peace, justice,
+            and strong institutions.
+          </p>
 
-              <h4>What I Did</h4>
+          <div class="collapsible-section">
+            <button class="collapsible-toggle">
+              <span class="toggle-arrow">▶</span>
+              <span class="toggle-label">What I Did</span>
+            </button>
+            <div class="collapsible-content">
               <ul>
                 <li>Implemented player controller and core gameplay systems.</li>
                 <li>Built world-switching mechanics between past and future states.</li>
@@ -196,26 +208,33 @@ case 'About Me':
                 <li>Created enemies, moving platforms, and interactive elements.</li>
                 <li>Designed and built multiple gameplay levels.</li>
               </ul>
-
-              <div style="display:flex; gap:8px;">
-                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
-                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
-              </div>
-
-              <a href="https://www.youtube.com/watch?v=8CkgqogTGeM" target="_blank" rel="noopener">
-                <img src="https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg"
-                     style="width:100%; margin-top:12px; border-radius:8px;">
-              </a>
             </div>
+          </div>
 
-            <!-- Boat -->
-            <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
-              <h3>Boat</h3>
-              <p>
-                A group project based on the open-world survival genre.
-              </p>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
+          </div>
 
-              <h4>What I Did</h4>
+          <a href="https://www.youtube.com/watch?v=8CkgqogTGeM" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg"
+                 style="width:100%; margin-top:12px; border-radius:8px;">
+          </a>
+        </div>
+
+        <!-- Boat -->
+        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+          <h3>Boat</h3>
+          <p>
+            A group project based on the open-world survival genre.
+          </p>
+
+          <div class="collapsible-section">
+            <button class="collapsible-toggle">
+              <span class="toggle-arrow">▶</span>
+              <span class="toggle-label">What I Did</span>
+            </button>
+            <div class="collapsible-content">
               <ul>
                 <li>Designed and implemented the game UI.</li>
                 <li>Extended the framework’s scene manager to support multiple scenes.</li>
@@ -223,27 +242,34 @@ case 'About Me':
                 <li>Created cutscenes and physics-based systems.</li>
                 <li>Designed and built the OilRig level.</li>
               </ul>
-
-              <div style="display:flex; gap:8px;">
-                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C++</span>
-                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">OpenGL</span>
-              </div>
-
-              <a href="https://www.youtube.com/watch?v=P6keUXjFF40" target="_blank" rel="noopener">
-                <img src="https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg"
-                     style="width:100%; margin-top:12px; border-radius:8px;">
-              </a>
             </div>
+          </div>
 
-            <!-- Vestige -->
-            <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
-              <h3>Vestige</h3>
-              <p>
-                A story-driven 3D side-scroller built in Unreal Engine,
-                focusing on dream-like environments and emotional progression.
-              </p>
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C++</span>
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">OpenGL</span>
+          </div>
 
-              <h4>What I Did</h4>
+          <a href="https://www.youtube.com/watch?v=P6keUXjFF40" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg"
+                 style="width:100%; margin-top:12px; border-radius:8px;">
+          </a>
+        </div>
+
+        <!-- Vestige -->
+        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+          <h3>Vestige</h3>
+          <p>
+            A story-driven 3D side-scroller built in Unreal Engine,
+            focusing on dream-like environments and emotional progression.
+          </p>
+
+          <div class="collapsible-section">
+            <button class="collapsible-toggle">
+              <span class="toggle-arrow">▶</span>
+              <span class="toggle-label">What I Did</span>
+            </button>
+            <div class="collapsible-content">
               <ul>
                 <li>Implemented player movement including push/pull, hang, climb, and elevators.</li>
                 <li>Developed advanced camera systems with dead-zones, smoothing, and dynamic FOV.</li>
@@ -251,50 +277,59 @@ case 'About Me':
                 <li>Implemented quest system and full game UI.</li>
                 <li>Created saving and loading systems.</li>
               </ul>
-
-              <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unreal Engine</span>
-
-              <a href="https://www.youtube.com/watch?v=ULQUVjG7M-s" target="_blank" rel="noopener">
-                <img src="https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg"
-                     style="width:100%; margin-top:12px; border-radius:8px;">
-              </a>
             </div>
-
-            <!-- Into the Canvas -->
-            <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
-              <h3>Into the Canvas</h3>
-              <p>
-                An internship couch co-op project where players use paint mechanics
-                to solve puzzles together.
-              </p>
-
-                <h4>What I Did</h4>
-                <ul>
-                  <li>Designed and implemented a modular UI system to support reusable menus and scalable UI flows.</li>
-                  <li>Built a custom UnityEvent-style system with an improved Inspector that supports multiple parameters.</li>
-                  <li>Developed custom toon shaders for 3D models.</li>
-                  <li>Integrated UI animations with polish effects such as gradient backgrounds and selection feedback.</li>
-                  <li>Implemented player stats and timer systems, along with game and audio settings menus.</li>
-                  <li>Added controller-friendly UX features including auto-scrolling settings navigation.</li>
-                  <li>Implemented procedural mesh destruction compatible with any mesh.</li>
-                  <li>Prototyped obstacle mechanics and player throwing trajectory, then handed off to a teammate for final integration.</li>
-                </ul>
-
-              <div style="display:flex; gap:8px;">
-                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
-                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
-                <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Internship</span>
-              </div>
-
-              <a href="https://www.youtube.com/watch?v=kYTfj2U4430" target="_blank" rel="noopener">
-                <img src="https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg"
-                     style="width:100%; margin-top:12px; border-radius:8px;">
-              </a>
-            </div>
-
           </div>
+
+          <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unreal Engine</span>
+
+          <a href="https://www.youtube.com/watch?v=ULQUVjG7M-s" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg"
+                 style="width:100%; margin-top:12px; border-radius:8px;">
+          </a>
         </div>
-      `;
+
+        <!-- Into the Canvas -->
+        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+          <h3>Into the Canvas</h3>
+          <p>
+            An internship couch co-op project where players use paint mechanics
+            to solve puzzles together.
+          </p>
+
+          <div class="collapsible-section">
+            <button class="collapsible-toggle">
+              <span class="toggle-arrow">▶</span>
+              <span class="toggle-label">What I Did</span>
+            </button>
+            <div class="collapsible-content">
+              <ul>
+                <li>Designed and implemented a modular UI system to support reusable menus and scalable UI flows.</li>
+                <li>Built a custom UnityEvent-style system with an improved Inspector that supports multiple parameters.</li>
+                <li>Developed custom toon shaders for 3D models.</li>
+                <li>Integrated UI animations with polish effects such as gradient backgrounds and selection feedback.</li>
+                <li>Implemented player stats and timer systems, along with game and audio settings menus.</li>
+                <li>Added controller-friendly UX features including auto-scrolling settings navigation.</li>
+                <li>Implemented procedural mesh destruction compatible with any mesh.</li>
+                <li>Prototyped obstacle mechanics and player throwing trajectory, then handed off to a teammate for final integration.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Internship</span>
+          </div>
+
+          <a href="https://www.youtube.com/watch?v=kYTfj2U4430" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg"
+                 style="width:100%; margin-top:12px; border-radius:8px;">
+          </a>
+        </div>
+
+      </div>
+    </div>
+  `;
 
     default:
       return '<p>Content not available</p>';
