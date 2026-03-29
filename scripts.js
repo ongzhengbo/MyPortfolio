@@ -70,26 +70,37 @@
       this.makeWindowDraggable(window);
     }
   
-    closeWindow(appName) {
-      const windowId = `window-${appName.replace(' ', '-')}`;
-      const window = document.getElementById(windowId);
-      if (window) {
-        window.remove();
-        this.openWindows.delete(appName);
-      }
+closeWindow(appName) {
+  const windowId = `window-${appName.replace(' ', '-')}`;
+  const window = document.getElementById(windowId);
 
-        const dockItem = document.querySelector(`.dock-item[data-app="${appName}"]`);
+  if (window) {
+    const wasMaximized = window.classList.contains('maximized');
+    window.remove();
+    this.openWindows.delete(appName);
+
+    if (wasMaximized) {
+      const anyMaximized = document.querySelector('.window.maximized');
+      const dock = document.getElementById('dock');
+
+      if (!anyMaximized) {
+        dock.classList.remove('hidden');
+      }
+    }
+  }
+
+  const dockItem = document.querySelector(`.dock-item[data-app="${appName}"]`);
   if (dockItem) {
     dockItem.classList.remove('active');
   }
-
-
-    }
+}
 
 toggleMaximize(window) {
+  const dock = document.getElementById('dock');
+
   if (window.classList.contains('maximized')) {
     window.classList.remove('maximized');
-    
+
     if (window.dataset.wasDragged === 'true') {
       window.style.top = window.dataset.originalTop;
       window.style.left = window.dataset.originalLeft;
@@ -99,6 +110,8 @@ toggleMaximize(window) {
       window.style.removeProperty('left');
       window.style.removeProperty('transform');
     }
+
+    dock.classList.remove('hidden');
   } else {
     if (window.style.top) {
       window.dataset.wasDragged = 'true';
@@ -107,11 +120,13 @@ toggleMaximize(window) {
     } else {
       window.dataset.wasDragged = 'false';
     }
-    
+
     window.classList.add('maximized');
     window.style.removeProperty('top');
     window.style.removeProperty('left');
     window.style.removeProperty('transform');
+
+    dock.classList.add('hidden');
   }
 }
   
@@ -200,12 +215,13 @@ case 'My Projects':
       <h2 style="text-align:center">My Projects</h2>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px;">
 
-        <!-- Echoes Of Virtue -->
+        <!-- WahHotSia -->
         <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
-          <h3>Echoes Of Virtue</h3>
+          <h3>WahHotSia</h3>
           <p>
-            A group project based around sustainability goals of peace, justice,
-            and strong institutions.
+            A social 3D room-building game where players design rooms, receive suggestions
+            for improvements, visualize wind flow, and explore other players’ creations
+            through a feature page.
           </p>
 
           <div class="collapsible-section">
@@ -215,88 +231,24 @@ case 'My Projects':
             </button>
             <div class="collapsible-content">
               <ul>
-                <li>Implemented player controller and core gameplay systems.</li>
-                <li>Built world-switching mechanics between past and future states.</li>
-                <li>Developed doors that transition between scenes.</li>
-                <li>Created enemies, moving platforms, and interactive elements.</li>
-                <li>Designed and built multiple gameplay levels.</li>
+                <li>Built a 3D room-building system for players to design and customize interior spaces.</li>
+                <li>Implemented a suggestion system to help improve room layouts and placement decisions.</li>
+                <li>Developed a wind flow visualization feature to show how air moves through the designed room.</li>
+                <li>Created a feature page where players can browse and view other users’ room designs.</li>
+                <li>Worked on gameplay systems and user experience features to support social sharing and room planning.</li>
               </ul>
             </div>
           </div>
 
-          <div style="display:flex; gap:8px; margin-top:12px;">
+          <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
             <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
             <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">3D</span>
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Social Game</span>
           </div>
 
-          <a href="https://www.youtube.com/watch?v=8CkgqogTGeM" target="_blank" rel="noopener">
-            <img src="https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg"
-                 style="width:100%; margin-top:12px; border-radius:8px;">
-          </a>
-        </div>
-
-        <!-- Boat -->
-        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
-          <h3>Boat</h3>
-          <p>
-            A group project based on the open-world survival genre.
-          </p>
-
-          <div class="collapsible-section">
-            <button class="collapsible-toggle">
-              <span class="toggle-arrow">▶</span>
-              <span class="toggle-label">What I Did</span>
-            </button>
-            <div class="collapsible-content">
-              <ul>
-                <li>Designed and implemented the game UI.</li>
-                <li>Extended the framework’s scene manager to support multiple scenes.</li>
-                <li>Enabled parallel level development for open-world gameplay.</li>
-                <li>Created cutscenes and physics-based systems.</li>
-                <li>Designed and built the OilRig level.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div style="display:flex; gap:8px; margin-top:12px;">
-            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C++</span>
-            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">OpenGL</span>
-          </div>
-
-          <a href="https://www.youtube.com/watch?v=P6keUXjFF40" target="_blank" rel="noopener">
-            <img src="https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg"
-                 style="width:100%; margin-top:12px; border-radius:8px;">
-          </a>
-        </div>
-
-        <!-- Vestige -->
-        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
-          <h3>Vestige</h3>
-          <p>
-            A story-driven 3D side-scroller built in Unreal Engine,
-            focusing on dream-like environments and emotional progression.
-          </p>
-
-          <div class="collapsible-section">
-            <button class="collapsible-toggle">
-              <span class="toggle-arrow">▶</span>
-              <span class="toggle-label">What I Did</span>
-            </button>
-            <div class="collapsible-content">
-              <ul>
-                <li>Implemented player movement including push/pull, hang, climb, and elevators.</li>
-                <li>Developed advanced camera systems with dead-zones, smoothing, and dynamic FOV.</li>
-                <li>Built interaction and item inspection systems.</li>
-                <li>Implemented quest system and full game UI.</li>
-                <li>Created saving and loading systems.</li>
-              </ul>
-            </div>
-          </div>
-
-          <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unreal Engine</span>
-
-          <a href="https://www.youtube.com/watch?v=ULQUVjG7M-s" target="_blank" rel="noopener">
-            <img src="https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg"
+          <a href="https://www.youtube.com/watch?v=0uS9ZIcvuJA" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg"
                  style="width:100%; margin-top:12px; border-radius:8px;">
           </a>
         </div>
@@ -340,43 +292,106 @@ case 'My Projects':
           </a>
         </div>
 
-        <!-- WahHotSia -->
-              <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
-                <h3>WahHotSia</h3>
-                <p>
-                  A social 3D room-building game where players design rooms, receive suggestions
-                  for improvements, visualize wind flow, and explore other players’ creations
-                  through a feature page.
-                </p>
+        <!-- Vestige -->
+        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+          <h3>Vestige</h3>
+          <p>
+            A story-driven 3D side-scroller built in Unreal Engine,
+            focusing on dream-like environments and emotional progression.
+          </p>
 
-                <div class="collapsible-section">
-                  <button class="collapsible-toggle">
-                    <span class="toggle-arrow">▶</span>
-                    <span class="toggle-label">What I Did</span>
-                  </button>
-                  <div class="collapsible-content">
-                    <ul>
-                      <li>Built a 3D room-building system for players to design and customize interior spaces.</li>
-                      <li>Implemented a suggestion system to help improve room layouts and placement decisions.</li>
-                      <li>Developed a wind flow visualization feature to show how air moves through the designed room.</li>
-                      <li>Created a feature page where players can browse and view other users’ room designs.</li>
-                      <li>Worked on gameplay systems and user experience features to support social sharing and room planning.</li>
-                    </ul>
-                  </div>
-                </div>
+          <div class="collapsible-section">
+            <button class="collapsible-toggle">
+              <span class="toggle-arrow">▶</span>
+              <span class="toggle-label">What I Did</span>
+            </button>
+            <div class="collapsible-content">
+              <ul>
+                <li>Implemented player movement including push/pull, hang, climb, and elevators.</li>
+                <li>Developed advanced camera systems with dead-zones, smoothing, and dynamic FOV.</li>
+                <li>Built interaction and item inspection systems.</li>
+                <li>Implemented quest system and full game UI.</li>
+                <li>Created saving and loading systems.</li>
+              </ul>
+            </div>
+          </div>
 
-                <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
-                  <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
-                  <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
-                  <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">3D</span>
-                  <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Social Game</span>
-                </div>
+          <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unreal Engine</span>
 
-                <a href="https://www.youtube.com/watch?v=0uS9ZIcvuJA" target="_blank" rel="noopener">
-                  <img src="https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg"
-                       style="width:100%; margin-top:12px; border-radius:8px;">
-                </a>
-              </div>
+          <a href="https://www.youtube.com/watch?v=ULQUVjG7M-s" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg"
+                 style="width:100%; margin-top:12px; border-radius:8px;">
+          </a>
+        </div>
+
+        <!-- Boat -->
+        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+          <h3>Boat</h3>
+          <p>
+            A group project based on the open-world survival genre.
+          </p>
+
+          <div class="collapsible-section">
+            <button class="collapsible-toggle">
+              <span class="toggle-arrow">▶</span>
+              <span class="toggle-label">What I Did</span>
+            </button>
+            <div class="collapsible-content">
+              <ul>
+                <li>Designed and implemented the game UI.</li>
+                <li>Extended the framework’s scene manager to support multiple scenes.</li>
+                <li>Enabled parallel level development for open-world gameplay.</li>
+                <li>Created cutscenes and physics-based systems.</li>
+                <li>Designed and built the OilRig level.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C++</span>
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">OpenGL</span>
+          </div>
+
+          <a href="https://www.youtube.com/watch?v=P6keUXjFF40" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg"
+                 style="width:100%; margin-top:12px; border-radius:8px;">
+          </a>
+        </div>
+
+        <!-- Echoes Of Virtue -->
+        <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+          <h3>Echoes Of Virtue</h3>
+          <p>
+            A group project based around sustainability goals of peace, justice,
+            and strong institutions.
+          </p>
+
+          <div class="collapsible-section">
+            <button class="collapsible-toggle">
+              <span class="toggle-arrow">▶</span>
+              <span class="toggle-label">What I Did</span>
+            </button>
+            <div class="collapsible-content">
+              <ul>
+                <li>Implemented player controller and core gameplay systems.</li>
+                <li>Built world-switching mechanics between past and future states.</li>
+                <li>Developed doors that transition between scenes.</li>
+                <li>Created enemies, moving platforms, and interactive elements.</li>
+                <li>Designed and built multiple gameplay levels.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
+            <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
+          </div>
+
+          <a href="https://www.youtube.com/watch?v=8CkgqogTGeM" target="_blank" rel="noopener">
+            <img src="https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg"
+                 style="width:100%; margin-top:12px; border-radius:8px;">
+          </a>
+        </div>
 
       </div>
     </div>
