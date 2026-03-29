@@ -340,6 +340,44 @@ case 'My Projects':
           </a>
         </div>
 
+        <!-- WahHotSia -->
+              <div style="padding:16px; border:1px solid #eee; border-radius:8px;">
+                <h3>WahHotSia</h3>
+                <p>
+                  A social 3D room-building game where players design rooms, receive suggestions
+                  for improvements, visualize wind flow, and explore other players’ creations
+                  through a feature page.
+                </p>
+
+                <div class="collapsible-section">
+                  <button class="collapsible-toggle">
+                    <span class="toggle-arrow">▶</span>
+                    <span class="toggle-label">What I Did</span>
+                  </button>
+                  <div class="collapsible-content">
+                    <ul>
+                      <li>Built a 3D room-building system for players to design and customize interior spaces.</li>
+                      <li>Implemented a suggestion system to help improve room layouts and placement decisions.</li>
+                      <li>Developed a wind flow visualization feature to show how air moves through the designed room.</li>
+                      <li>Created a feature page where players can browse and view other users’ room designs.</li>
+                      <li>Worked on gameplay systems and user experience features to support social sharing and room planning.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                  <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Unity</span>
+                  <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">C#</span>
+                  <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">3D</span>
+                  <span style="padding:4px 8px; background:#f5f5f5; border-radius:12px;">Social Game</span>
+                </div>
+
+                <a href="https://www.youtube.com/watch?v=0uS9ZIcvuJA" target="_blank" rel="noopener">
+                  <img src="https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg"
+                       style="width:100%; margin-top:12px; border-radius:8px;">
+                </a>
+              </div>
+
       </div>
     </div>
   `;
