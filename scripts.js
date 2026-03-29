@@ -7,6 +7,46 @@
     this.initializeDock();
   }
 
+startDemoLoop() {
+  const playlist = [
+    {
+      title: "WahHotSia",
+      src: "Videos/wahhotsia.mp4"
+    },
+    {
+      title: "Into the Canvas",
+      src: "Videos/intothecanvas.mp4"
+    },
+    {
+      title: "Vestige",
+      src: "Videos/vestige.mp4"
+    }
+  ];
+
+  const player = document.getElementById("demoPlayer");
+  const title = document.getElementById("demoTitle");
+
+  if (!player || !title) return;
+
+  let index = 0;
+
+  const playVideo = () => {
+    const current = playlist[index];
+    player.src = current.src;
+    title.textContent = current.title;
+    player.play().catch(err => {
+      console.error("Demo reel playback failed:", err);
+    });
+  };
+
+  player.onended = () => {
+    index = (index + 1) % playlist.length;
+    playVideo();
+  };
+
+  playVideo();
+}
+
   initializeDock() {
     const dock = document.getElementById('dock');
     dock.addEventListener('click', (e) => {
@@ -79,6 +119,10 @@
     });
 
     this.makeWindowDraggable(window);
+
+if (appName === "Demo Reel") {
+  setTimeout(() => this.startDemoLoop(), 100);
+}
   }
 
   closeWindow(appName) {
@@ -441,6 +485,15 @@
             </div>
           </div>
         `;
+case 'Demo Reel':
+  return `
+    <div class="demo-reel-shell">
+<video id="demoPlayer" class="demo-video" autoplay playsinline controls></video>
+      <div class="demo-overlay">
+        <div id="demoTitle" class="demo-title">WahHotSia</div>
+      </div>
+    </div>
+  `;
 
       default:
         return '<p>Content not available</p>';
@@ -450,6 +503,25 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = new DesktopApp();
+  window.desktopAppInstance = app;
+
+  document.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() === 'd') {
+    const app = window.desktopAppInstance;
+    const existing = document.getElementById('window-Demo-Reel');
+
+    if (!existing) {
+      app.openWindow("Demo Reel");
+
+      const win = document.getElementById('window-Demo-Reel');
+      if (win) {
+        app.toggleMaximize(win);
+      }
+    } else {
+      app.bringToFront(existing);
+    }
+  }
+});
 
   document.addEventListener('mousemove', (e) => {
     if (app.draggedWindow) {
