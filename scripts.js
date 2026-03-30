@@ -548,4 +548,32 @@ document.addEventListener('DOMContentLoaded', () => {
       app.draggedWindow = null;
     }
   });
+
+  function enterDesktop() {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("desktop").style.display = "block";
+}
+
+document.getElementById("login-btn").addEventListener("click", () => {
+  const password = document.getElementById("password").value;
+
+  if (password === "123") {
+    enterDesktop();
+  } else {
+    alert("Wrong password");
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const password = document.getElementById("password").value;
+
+    if (password === "123") {
+      enterDesktop();
+    } else {
+      alert("Wrong password");
+    }
+  }
+});
+
 });

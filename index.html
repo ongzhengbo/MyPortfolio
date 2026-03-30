@@ -8,7 +8,22 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="desktop">
+  <!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-panel">
+    <h1 class="login-name">Zhengbo</h1>
+
+    <div class="password-wrap">
+      <input type="password" id="password" placeholder="Enter Password" />
+      <button id="login-btn" class="login-arrow" aria-label="Login">→</button>
+    </div>
+
+    <div class="password-hint">Password hint: 123</div>
+  </div>
+</div>
+
+  <!-- DESKTOP -->
+  <div id="desktop" style="display:none;">
     <div id="windows-container"></div>
     <div id="dock">
       <button class="dock-item" data-app="About Me">👤</button>
@@ -16,6 +31,7 @@
       <button class="dock-item" data-app="Certificate">📜</button>
     </div>
   </div>
+
   <script src="scripts.js"></script>
 </body>
 </htm
