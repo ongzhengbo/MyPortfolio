@@ -168,57 +168,84 @@
   }
 
   // ==================== WINDOW MANAGEMENT ====================
-  openWindow(appName) {
-    if (this.openWindows.has(appName)) {
-      const existing = this.openWindows.get(appName);
-      this.bringToFront(existing);
-      this.highlightTaskbarApp(appName);
-      return;
-    }
-
-    const windowEl = document.createElement('div');
-    windowEl.className = 'window';
-    windowEl.dataset.app = appName;
-    windowEl.id = `window-${appName.replace(/\s+/g, '-')}`;
-
-    const iconPath = this.appIcons[appName] || 'assets/icons/about-me.png';
-
-    windowEl.innerHTML = `
-      <div class="window-header">
-        <img src="${iconPath}" class="window-icon" alt="" onerror="this.style.display='none'">
-        <div class="window-title">${appName}</div>
-        <div class="window-controls">
-          <button class="window-control window-minimize" title="Minimize">−</button>
-          <button class="window-control window-maximize" title="Maximize">□</button>
-          <button class="window-control window-close" title="Close">×</button>
-        </div>
-      </div>
-      <div class="window-content">
-        ${this.getContentForApp(appName)}
-      </div>
-      <div class="resize-handle resize-e" data-dir="e"></div>
-      <div class="resize-handle resize-s" data-dir="s"></div>
-      <div class="resize-handle resize-se" data-dir="se"></div>
-    `;
-
-    document.getElementById('windows-container').appendChild(windowEl);
-    this.openWindows.set(appName, windowEl);
-
-    const offset = this.openWindows.size * 30;
-    windowEl.style.top = `${60 + offset}px`;
-    windowEl.style.left = `${60 + offset}px`;
-    windowEl.style.transform = 'none';
-    windowEl.style.width = '760px';
-    windowEl.style.height = '560px';
-
-    this.bringToFront(windowEl);
-    this.addTaskbarApp(appName, iconPath);
-    this.setupWindowEvents(windowEl, appName);
-
-    if (appName === 'Demo Reel') {
-      setTimeout(() => this.initDemoPlayer(), 100);
-    }
+openWindow(appName) {
+  if (this.openWindows.has(appName)) {
+    const existing = this.openWindows.get(appName);
+    this.bringToFront(existing);
+    this.highlightTaskbarApp(appName);
+    return;
   }
+
+  const windowEl = document.createElement('div');
+  windowEl.className = 'window';
+  windowEl.dataset.app = appName;
+  windowEl.id = `window-${appName.replace(/\s+/g, '-')}`;
+
+  const iconPath = this.appIcons[appName] || 'assets/icons/about-me.png';
+
+  windowEl.innerHTML = `
+    <div class="window-header">
+      <img src="${iconPath}" class="window-icon" alt="" onerror="this.style.display='none'">
+      <div class="window-title">${appName}</div>
+      <div class="window-controls">
+        <button class="window-control window-minimize" title="Minimize">−</button>
+        <button class="window-control window-maximize" title="Maximize">□</button>
+        <button class="window-control window-close" title="Close">×</button>
+      </div>
+    </div>
+    <div class="window-content">
+      ${this.getContentForApp(appName)}
+    </div>
+    <div class="resize-handle resize-e" data-dir="e"></div>
+    <div class="resize-handle resize-s" data-dir="s"></div>
+    <div class="resize-handle resize-se" data-dir="se"></div>
+  `;
+
+  const size = this.appSizes[appName] || {
+    width: 760,
+    height: 560,
+    minWidth: 400,
+    minHeight: 300
+  };
+
+  const taskbarHeight = 48;
+  const screenPadding = 24;
+
+  const finalWidth = Math.min(size.width, window.innerWidth - screenPadding * 2);
+  const finalHeight = Math.min(size.height, window.innerHeight - taskbarHeight - screenPadding * 2);
+
+  const finalLeft = Math.max(
+    screenPadding,
+    Math.round((window.innerWidth - finalWidth) / 2)
+  );
+
+  const finalTop = Math.max(
+    screenPadding,
+    Math.round((window.innerHeight - taskbarHeight - finalHeight) / 2)
+  );
+
+  // IMPORTANT:
+  // Set size and position BEFORE adding to the page.
+  // This prevents the window from appearing at top-left first.
+  windowEl.style.width = `${finalWidth}px`;
+  windowEl.style.height = `${finalHeight}px`;
+  windowEl.style.minWidth = `${size.minWidth}px`;
+  windowEl.style.minHeight = `${size.minHeight}px`;
+  windowEl.style.left = `${finalLeft}px`;
+  windowEl.style.top = `${finalTop}px`;
+  windowEl.style.transform = 'none';
+
+  document.getElementById('windows-container').appendChild(windowEl);
+  this.openWindows.set(appName, windowEl);
+
+  this.bringToFront(windowEl);
+  this.addTaskbarApp(appName, iconPath);
+  this.setupWindowEvents(windowEl, appName);
+
+  if (appName === 'Demo Reel') {
+    setTimeout(() => this.initDemoPlayer(), 100);
+  }
+}
 
   closeWindow(appName) {
     const windowEl = this.openWindows.get(appName);
