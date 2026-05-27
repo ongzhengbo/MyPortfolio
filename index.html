@@ -1,37 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio</title>
-  <meta name="" content="Game Dev Portfolio" />
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <!-- LOGIN SCREEN -->
-<div id="login-screen">
-  <div class="login-panel">
-    <h1 class="login-name">Zhengbo's Portfolio</h1>
-
-    <div class="password-wrap">
-      <input type="password" id="password" placeholder="Enter Password" />
-      <button id="login-btn" class="login-arrow" aria-label="Login">→</button>
-    </div>
-
-    <div class="password-hint">Password hint: 123</div>
-  </div>
-</div>
-
-  <!-- DESKTOP -->
-  <div id="desktop" style="display:none;">
-    <div id="windows-container"></div>
-    <div id="dock">
-      <button class="dock-item" data-app="About Me">👤</button>
-      <button class="dock-item" data-app="My Projects">💼</button>
-      <button class="dock-item" data-app="Certificate">📜</button>
-    </div>
-  </div>
-
-  <script src="scripts.js"></script>
-</body>
-</htm
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zheng Bo Portfolio</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
