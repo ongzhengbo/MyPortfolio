@@ -21,7 +21,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  background: url('assets/backgrounds/login-bg.jpg') center/cover no-repeat;
+  background: url('assets/backgrounds/login-bg.png') center/cover no-repeat;
 }
 
 .login-panel {
@@ -68,9 +68,12 @@ body {
   margin: 0 0 24px;
   color: white;
   font-size: 28px;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.5px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 12px rgba(0, 0, 0, 0.8),
+    0 0 18px rgba(0, 0, 0, 0.7);
 }
 
 .password-wrap {
@@ -126,7 +129,10 @@ body {
 .password-hint {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 4px 12px rgba(0, 0, 0, 0.8),
+    0 0 18px rgba(0, 0, 0, 0.7);
 }
 
 /* ==================== DESKTOP ==================== */
@@ -152,7 +158,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 76px;
+  width: 96px;
+  height : 96px;
   padding: 8px 4px;
   border-radius: 8px;
   cursor: pointer;
@@ -170,25 +177,26 @@ body {
 }
 
 .desktop-icon img {
-  width: 44px;
-  height: 44px;
+  width: 74px;
+  height: 74px;
   object-fit: contain;
   margin-bottom: 4px;
+  padding: 10px 6px;
 }
 
 .icon-fallback {
-  width: 44px;
-  height: 44px;
+  width: 64px;
+  height: 64px;
   display: none;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 38px;
   margin-bottom: 4px;
 }
 
 .desktop-icon span {
   color: white;
-  font-size: 11px;
+  font-size: 12px;
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   line-height: 1.2;
   font-weight: 500;
@@ -271,7 +279,7 @@ body {
   }
 }
 
-/* Window Header - Clean, modern, app-like */
+/* Window Header */
 .window-header {
   height: 40px;
   background: #f8f9fa;
@@ -358,29 +366,29 @@ body {
   max-height: none;
 }
 
-/* ==================== TASKBAR (Centered) ==================== */
+/* ==================== TASKBAR ==================== */
 #taskbar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 48px;
+  height: 56px; /* was 48px */
   background: linear-gradient(180deg, rgba(30, 35, 45, 0.92) 0%, rgba(15, 20, 30, 0.96) 100%);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  gap: 4px;
+  padding: 0 14px;
+  gap: 6px;
   z-index: 1000;
 }
 
 #start-btn {
-  width: 40px;
-  height: 40px;
+  width: 48px;  /* was 40px */
+  height: 48px; /* was 40px */
   border: none;
   background: transparent;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -394,25 +402,25 @@ body {
 }
 
 #start-btn img {
-  width: 22px;
-  height: 22px;
+  width: 28px;  /* was 22px */
+  height: 28px; /* was 22px */
   object-fit: contain;
 }
 
 /* Pinned Apps */
 #taskbar-pinned {
   display: flex;
-  gap: 2px;
-  padding: 0 4px;
+  gap: 4px;
+  padding: 0 6px;
   flex-shrink: 0;
 }
 
 .taskbar-pin {
-  width: 40px;
-  height: 40px;
+  width: 48px;  /* was 40px */
+  height: 48px; /* was 40px */
   border: none;
   background: transparent;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -427,42 +435,42 @@ body {
 }
 
 .taskbar-pin img {
-  width: 22px;
-  height: 22px;
+  width: 28px;  /* was 22px */
+  height: 28px; /* was 22px */
   object-fit: contain;
 }
 
 /* Divider */
 .taskbar-divider {
   width: 1px;
-  height: 24px;
+  height: 30px; /* was 24px */
   background: rgba(255, 255, 255, 0.1);
-  margin: 0 4px;
+  margin: 0 6px;
   flex-shrink: 0;
 }
 
 #taskbar-apps {
   display: flex;
-  gap: 2px;
+  gap: 4px;
   flex: 1;
-  padding: 0 4px;
+  padding: 0 6px;
   min-width: 0;
 }
 
 .taskbar-app {
-  height: 36px;
-  padding: 0 12px;
+  height: 44px; /* was 36px */
+  padding: 0 14px;
   border: none;
   background: rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
+  border-radius: 8px;
   color: rgba(255,255,255,0.9);
-  font-size: 12px;
+  font-size: 13px; /* was 12px */
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   transition: all 0.15s;
-  max-width: 200px;
+  max-width: 220px;
   white-space: nowrap;
   overflow: hidden;
   flex-shrink: 1;
@@ -481,18 +489,18 @@ body {
 .taskbar-app.active::after {
   content: '';
   position: absolute;
-  bottom: 2px;
+  bottom: 3px;
   left: 50%;
   transform: translateX(-50%);
-  width: 16px;
-  height: 2px;
+  width: 20px; /* was 16px */
+  height: 3px; /* was 2px */
   background: #8ab4f8;
-  border-radius: 1px;
+  border-radius: 2px;
 }
 
 .taskbar-app img {
-  width: 18px;
-  height: 18px;
+  width: 24px;  /* was 18px */
+  height: 24px; /* was 18px */
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -502,21 +510,21 @@ body {
   flex-direction: column;
   align-items: flex-end;
   color: rgba(255,255,255,0.85);
-  font-size: 12px;
-  padding: 0 8px;
+  font-size: 13px;
+  padding: 0 10px;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
-  margin-left: 6px;
+  margin-left: 8px;
   flex-shrink: 0;
 }
 
 #clock {
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px; /* was 12px */
 }
 
 #date {
   color: rgba(255, 255, 255, 0.55);
-  font-size: 10px;
+  font-size: 11px; /* was 10px */
 }
 
 /* ==================== START MENU ==================== */
@@ -608,12 +616,6 @@ body {
   border-color: rgba(234, 67, 53, 0.4);
 }
 
-/* ============================================================
-   REAL APP DESIGNS - Clean, modern, no weird AI borders
-   ============================================================ */
-
-/* ---- GOOGLE-INSPIRED BASE (About Me, Projects, Certificate) ---- */
-
 .page-shell {
   display: flex;
   flex-direction: column;
@@ -621,7 +623,6 @@ body {
   min-height: 100%;
 }
 
-/* App Bar - like Google apps top bar */
 .app-bar {
   height: 56px;
   background: #fff;
@@ -887,7 +888,7 @@ body {
 }
 
 /* ============================================================
-   DEMO REEL - MP4 Player (VLC / QuickTime inspired)
+   DEMO REEL 
    ============================================================ */
 
 .demo-player-shell {
