@@ -205,6 +205,20 @@ body {
   pointer-events: auto;
 }
 
+.window::before {
+  content: '';
+  position: absolute;
+  top: -90px;
+  right: 120px;
+  width: 130px;
+  height: 130px;
+  background: url('assets/decor/tigerpng.png') no-repeat center;
+  background-size: contain;
+  pointer-events: none;
+  z-index: 80;
+  opacity: 1;
+}
+
 .window {
   position: absolute;
   top: 0;
@@ -219,7 +233,7 @@ body {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0,0,0,0.1);
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   animation: windowOpen 0.2s ease-out;
@@ -267,6 +281,16 @@ body {
   padding: 0 12px;
   cursor: grab;
   flex-shrink: 0;
+}
+
+.window-header,
+.window-content {
+  position: relative;
+  z-index: 2;
+}
+
+.window.maximized::before {
+  display: none;
 }
 
 .window-header:active {
