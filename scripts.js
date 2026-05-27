@@ -3,6 +3,9 @@
     this.openWindows = new Map();
     this.draggedWindow = null;
     this.dragOffset = { x: 0, y: 0 };
+    this.resizedWindow = null;
+    this.resizeDir = null;
+    this.resizeStart = { x: 0, y: 0, w: 0, h: 0, l: 0, t: 0 };
     this.topZIndex = 100;
     this.isStartMenuOpen = false;
 
@@ -12,6 +15,18 @@
       'Certificate': 'assets/icons/certificate.png',
       'Demo Reel': 'assets/icons/demo-reel.png'
     };
+
+    // Per-app default sizes (width, height) - fully customizable
+    this.appSizes = {
+      'About Me': { width: 600, height: 520, minWidth: 400, minHeight: 350 },
+      'My Projects': { width: 820, height: 620, minWidth: 500, minHeight: 400 },
+      'Certificate': { width: 700, height: 580, minWidth: 450, minHeight: 380 },
+      'Demo Reel': { width: 900, height: 560, minWidth: 560, minHeight: 380 }
+    };
+
+    this.resizedWindow = null;
+    this.resizeDirection = null;
+    this.resizeStart = { x: 0, y: 0, width: 0, height: 0, left: 0, top: 0 };
 
     this.initializeLogin();
     this.initializeDesktopIcons();
@@ -181,15 +196,20 @@
       <div class="window-content">
         ${this.getContentForApp(appName)}
       </div>
+      <div class="resize-handle resize-e" data-dir="e"></div>
+      <div class="resize-handle resize-s" data-dir="s"></div>
+      <div class="resize-handle resize-se" data-dir="se"></div>
     `;
 
     document.getElementById('windows-container').appendChild(windowEl);
     this.openWindows.set(appName, windowEl);
 
     const offset = this.openWindows.size * 30;
-    windowEl.style.top = `${50 + offset}px`;
-    windowEl.style.left = `${50 + offset}px`;
+    windowEl.style.top = `${60 + offset}px`;
+    windowEl.style.left = `${60 + offset}px`;
     windowEl.style.transform = 'none';
+    windowEl.style.width = '760px';
+    windowEl.style.height = '560px';
 
     this.bringToFront(windowEl);
     this.addTaskbarApp(appName, iconPath);
@@ -238,14 +258,16 @@
       if (windowEl.dataset.prevTop) {
         windowEl.style.top = windowEl.dataset.prevTop;
         windowEl.style.left = windowEl.dataset.prevLeft;
-        windowEl.style.width = windowEl.dataset.prevWidth;
-        windowEl.style.height = windowEl.dataset.prevHeight;
+        windowEl.style.width = windowEl.dataset.prevWidth || '760px';
+        windowEl.style.height = windowEl.dataset.prevHeight || '560px';
       }
     } else {
+      // Save current dimensions (including any resize by user)
+      const computed = getComputedStyle(windowEl);
       windowEl.dataset.prevTop = windowEl.style.top;
       windowEl.dataset.prevLeft = windowEl.style.left;
-      windowEl.dataset.prevWidth = windowEl.style.width;
-      windowEl.dataset.prevHeight = windowEl.style.height;
+      windowEl.dataset.prevWidth = computed.width;
+      windowEl.dataset.prevHeight = computed.height;
       windowEl.classList.add('maximized');
     }
 
@@ -267,6 +289,79 @@
       this.bringToFront(windowEl);
       this.highlightTaskbarApp(appName);
     }
+  }
+
+  setupResize(windowEl) {
+    let resizing = false;
+    let resizeDir = '';
+    let startX = 0, startY = 0;
+    let startW = 0, startH = 0;
+
+    windowEl.querySelectorAll('.resize-handle').forEach(handle => {
+      handle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        resizing = true;
+        resizeDir = handle.classList.contains('se') ? 'se' : 
+                    handle.classList.contains('e') ? 'e' : 's';
+        startX = e.clientX;
+        startY = e.clientY;
+        startW = windowEl.offsetWidth;
+        startH = windowEl.offsetHeight;
+        windowEl.classList.add('resizing');
+      });
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!resizing) return;
+
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      const minW = 400;
+      const minH = 300;
+      const maxW = window.innerWidth - 40;
+      const maxH = window.innerHeight - 80;
+
+      if (resizeDir === 'se' || resizeDir === 'e') {
+        const newW = Math.max(minW, Math.min(startW + dx, maxW));
+        windowEl.style.width = newW + 'px';
+      }
+      if (resizeDir === 'se' || resizeDir === 's') {
+        const newH = Math.max(minH, Math.min(startH + dy, maxH));
+        windowEl.style.height = newH + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (resizing) {
+        resizing = false;
+        windowEl.classList.remove('resizing');
+      }
+    });
+  }
+
+  setupResizeHandles(windowEl) {
+    windowEl.querySelectorAll('.resize-handle').forEach(handle => {
+      handle.addEventListener('mousedown', (e) => {
+        if (windowEl.classList.contains('maximized')) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.resizedWindow = windowEl;
+        this.resizeDirection = handle.dataset.dir;
+        const rect = windowEl.getBoundingClientRect();
+        this.resizeStart = {
+          x: e.clientX,
+          y: e.clientY,
+          width: rect.width,
+          height: rect.height,
+          left: rect.left,
+          top: rect.top
+        };
+        windowEl.classList.add('resizing');
+      });
+    });
   }
 
   setupWindowEvents(windowEl, appName) {
@@ -291,8 +386,12 @@
       if (e.target.classList.contains('window-control')) return;
       if (windowEl.classList.contains('maximized')) return;
 
-      this.draggedWindow = windowEl;
+      // Don't drag if clicking near resize handle (bottom-right 20px)
       const rect = windowEl.getBoundingClientRect();
+      const isResizeArea = (e.clientX > rect.right - 20) && (e.clientY > rect.bottom - 20);
+      if (isResizeArea) return;
+
+      this.draggedWindow = windowEl;
       this.dragOffset.x = e.clientX - rect.left;
       this.dragOffset.y = e.clientY - rect.top;
       windowEl.classList.add('dragging');
@@ -380,12 +479,34 @@
         this.draggedWindow.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
         this.draggedWindow.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
       }
+
+      if (this.resizedWindow) {
+        const dx = e.clientX - this.resizeStart.x;
+        const dy = e.clientY - this.resizeStart.y;
+        const minW = 400;
+        const minH = 300;
+        const maxW = window.innerWidth - 20;
+        const maxH = window.innerHeight - 68;
+
+        if (this.resizeDir.includes('e')) {
+          const newW = Math.max(minW, Math.min(maxW, this.resizeStart.w + dx));
+          this.resizedWindow.style.width = newW + 'px';
+        }
+        if (this.resizeDir.includes('s')) {
+          const newH = Math.max(minH, Math.min(maxH, this.resizeStart.h + dy));
+          this.resizedWindow.style.height = newH + 'px';
+        }
+      }
     });
 
     document.addEventListener('mouseup', () => {
       if (this.draggedWindow) {
         this.draggedWindow.classList.remove('dragging');
         this.draggedWindow = null;
+      }
+      if (this.resizedWindow) {
+        this.resizedWindow = null;
+        this.resizeDir = null;
       }
     });
   }

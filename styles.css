@@ -133,7 +133,7 @@ body {
 #desktop {
   position: fixed;
   inset: 0;
-  background: url('assets/backgrounds/desktop-bg.jpg') center/cover no-repeat;
+  background: url('assets/backgrounds/desktop-bg.png') center/cover no-repeat;
   overflow: hidden;
 }
 
@@ -210,9 +210,11 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 520px;
-  max-width: 960px;
+  min-width: 400px;
+  min-height: 300px;
   width: 760px;
+  height: 560px;
+  max-width: calc(100vw - 40px);
   max-height: calc(100vh - 80px);
   background: #fff;
   border-radius: 8px;
@@ -223,6 +225,7 @@ body {
   animation: windowOpen 0.2s ease-out;
   z-index: 100;
   border: 1px solid rgba(0,0,0,0.08);
+  resize: both;
 }
 
 .window.dragging {
@@ -240,6 +243,7 @@ body {
   max-height: none;
   border-radius: 0;
   border: none;
+  resize: none;
 }
 
 @keyframes windowOpen {
@@ -330,20 +334,20 @@ body {
   max-height: none;
 }
 
-/* ==================== TASKBAR ==================== */
+/* ==================== TASKBAR (Centered) ==================== */
 #taskbar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   height: 48px;
-  background: rgba(32, 33, 36, 0.92);
+  background: linear-gradient(180deg, rgba(30, 35, 45, 0.92) 0%, rgba(15, 20, 30, 0.96) 100%);
   backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
-  padding: 0 10px;
-  gap: 2px;
+  padding: 0 12px;
+  gap: 4px;
   z-index: 1000;
 }
 
@@ -496,12 +500,12 @@ body {
   position: fixed;
   bottom: 48px;
   left: 0;
-  width: 260px;
-  background: rgba(32, 33, 36, 0.95);
+  width: 280px;
+  background: linear-gradient(180deg, rgba(35, 40, 55, 0.95) 0%, rgba(20, 25, 40, 0.98) 100%);
   backdrop-filter: blur(30px);
-  border-radius: 12px 12px 0 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
+  border-radius: 8px 8px 0 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
   z-index: 999;
   overflow: hidden;
 }
@@ -1017,6 +1021,71 @@ body {
   text-align: right;
 }
 
+
+/* Resize handle indicator */
+.window::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.15) 50%);
+  border-bottom-right-radius: 8px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.window.maximized::after {
+  display: none;
+}
+
+
+/* ==================== WINDOW RESIZE ==================== */
+.resize-handle {
+  position: absolute;
+  z-index: 1000;
+}
+
+.resize-handle.n {
+  top: 0; left: 8px; right: 8px; height: 6px;
+  cursor: ns-resize;
+}
+.resize-handle.s {
+  bottom: 0; left: 8px; right: 8px; height: 6px;
+  cursor: ns-resize;
+}
+.resize-handle.e {
+  right: 0; top: 8px; bottom: 8px; width: 6px;
+  cursor: ew-resize;
+}
+.resize-handle.w {
+  left: 0; top: 8px; bottom: 8px; width: 6px;
+  cursor: ew-resize;
+}
+.resize-handle.ne {
+  top: 0; right: 0; width: 10px; height: 10px;
+  cursor: nesw-resize;
+}
+.resize-handle.nw {
+  top: 0; left: 0; width: 10px; height: 10px;
+  cursor: nwse-resize;
+}
+.resize-handle.se {
+  bottom: 0; right: 0; width: 10px; height: 10px;
+  cursor: nwse-resize;
+}
+.resize-handle.sw {
+  bottom: 0; left: 0; width: 10px; height: 10px;
+  cursor: nesw-resize;
+}
+
+.window.resizing {
+  transition: none !important;
+  user-select: none;
+}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -1065,4 +1134,47 @@ body {
   .taskbar-divider {
     display: none;
   }
+}
+
+
+/* ==================== RESIZE HANDLES ==================== */
+.resize-handle {
+  position: absolute;
+  z-index: 1000;
+}
+
+.resize-handle.se {
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+}
+
+.resize-handle.se::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid rgba(0,0,0,0.3);
+  border-bottom: 2px solid rgba(0,0,0,0.3);
+  border-radius: 0 0 2px 0;
+}
+
+.resize-handle.e {
+  top: 40px;
+  right: 0;
+  width: 6px;
+  bottom: 0;
+  cursor: e-resize;
+}
+
+.resize-handle.s {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  cursor: s-resize;
 }
