@@ -1,499 +1,782 @@
 ﻿class DesktopApp {
   constructor() {
-    this.openWindows = new Set();
+    this.openWindows = new Map();
     this.draggedWindow = null;
     this.dragOffset = { x: 0, y: 0 };
     this.topZIndex = 100;
-    this.initializeDock();
+    this.isStartMenuOpen = false;
+
+    this.appIcons = {
+      'About Me': 'assets/icons/about-me.png',
+      'My Projects': 'assets/icons/my-projects.png',
+      'Certificate': 'assets/icons/certificate.png',
+      'Demo Reel': 'assets/icons/demo-reel.png'
+    };
+
+    this.initializeLogin();
+    this.initializeDesktopIcons();
+    this.initializeTaskbar();
+    this.initializeStartMenu();
+    this.initializePinnedApps();
+    this.updateClock();
   }
 
-startDemoLoop() {
-  const playlist = [
-    {
-      title: "WahHotSia",
-      src: "Videos/wahhotsia.mp4"
-    },
-    {
-      title: "Into the Canvas",
-      src: "Videos/intothecanvas.mp4"
-    },
-    {
-      title: "Vestige",
-      src: "Videos/vestige.mp4"
-    }
-  ];
+  // ==================== LOGIN ====================
+  initializeLogin() {
+    const loginBtn = document.getElementById('login-btn');
+    const passwordInput = document.getElementById('password');
 
-  const player = document.getElementById("demoPlayer");
-  const title = document.getElementById("demoTitle");
+    const attemptLogin = () => {
+      if (passwordInput.value === '123') {
+        this.enterDesktop();
+      } else {
+        this.shakeElement(document.querySelector('.login-panel'));
+        passwordInput.value = '';
+        passwordInput.placeholder = 'Wrong password';
+        setTimeout(() => {
+          passwordInput.placeholder = 'Enter Password';
+        }, 1500);
+      }
+    };
 
-  if (!player || !title) return;
-
-  let index = 0;
-
-  const playVideo = () => {
-    const current = playlist[index];
-    player.src = current.src;
-    title.textContent = current.title;
-    player.play().catch(err => {
-      console.error("Demo reel playback failed:", err);
+    loginBtn.addEventListener('click', attemptLogin);
+    passwordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') attemptLogin();
     });
-  };
+  }
 
-  player.onended = () => {
-    index = (index + 1) % playlist.length;
-    playVideo();
-  };
+  shakeElement(element) {
+    element.style.animation = 'none';
+    element.offsetHeight;
+    element.style.animation = 'shake 0.5s ease';
+  }
 
-  playVideo();
-}
+  enterDesktop() {
+    const loginScreen = document.getElementById('login-screen');
+    loginScreen.style.transition = 'opacity 0.5s ease';
+    loginScreen.style.opacity = '0';
+    setTimeout(() => {
+      loginScreen.style.display = 'none';
+      document.getElementById('desktop').style.display = 'block';
+    }, 500);
+  }
 
-  initializeDock() {
-    const dock = document.getElementById('dock');
-    dock.addEventListener('click', (e) => {
-      if (e.target.classList.contains('dock-item')) {
-        const appName = e.target.dataset.app;
-        this.toggleWindow(appName);
+  // ==================== DESKTOP ICONS ====================
+  initializeDesktopIcons() {
+    const icons = document.querySelectorAll('.desktop-icon');
+    icons.forEach(icon => {
+      icon.addEventListener('click', () => {
+        icons.forEach(i => i.classList.remove('selected'));
+        icon.classList.add('selected');
+        const appName = icon.dataset.app;
+        this.openWindow(appName);
+      });
+
+      icon.addEventListener('dblclick', () => {
+        const appName = icon.dataset.app;
+        this.openWindow(appName);
+      });
+    });
+
+    document.getElementById('desktop').addEventListener('click', (e) => {
+      if (e.target.id === 'desktop' || e.target.id === 'windows-container') {
+        icons.forEach(i => i.classList.remove('selected'));
       }
     });
   }
 
-  toggleWindow(appName) {
-    if (this.openWindows.has(appName)) {
-      this.closeWindow(appName);
-    } else {
-      this.openWindow(appName);
-    }
+  // ==================== TASKBAR ====================
+  initializeTaskbar() {
+    document.getElementById('start-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleStartMenu();
+    });
+
+    document.getElementById('shutdown-btn').addEventListener('click', () => {
+      location.reload();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (this.isStartMenuOpen && !e.target.closest('#start-menu') && !e.target.closest('#start-btn')) {
+        this.closeStartMenu();
+      }
+    });
   }
 
-  bringToFront(window) {
-    this.topZIndex += 1;
-    window.style.zIndex = this.topZIndex;
+  // ==================== PINNED APPS ====================
+  initializePinnedApps() {
+    document.querySelectorAll('.taskbar-pin').forEach(pin => {
+      pin.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const appName = pin.dataset.app;
+        if (appName) this.openWindow(appName);
+      });
+    });
   }
 
+  toggleStartMenu() {
+    const menu = document.getElementById('start-menu');
+    this.isStartMenuOpen = !this.isStartMenuOpen;
+    menu.style.display = this.isStartMenuOpen ? 'block' : 'none';
+  }
+
+  closeStartMenu() {
+    this.isStartMenuOpen = false;
+    document.getElementById('start-menu').style.display = 'none';
+  }
+
+  updateClock() {
+    const update = () => {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const year = now.getFullYear();
+
+      document.getElementById('clock').textContent = `${hours}:${minutes}`;
+      document.getElementById('date').textContent = `${month}/${day}/${year}`;
+    };
+    update();
+    setInterval(update, 1000);
+  }
+
+  // ==================== START MENU ====================
+  initializeStartMenu() {
+    document.querySelectorAll('.start-menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const appName = item.dataset.app;
+        this.openWindow(appName);
+        this.closeStartMenu();
+      });
+    });
+  }
+
+  // ==================== WINDOW MANAGEMENT ====================
   openWindow(appName) {
-    const window = document.createElement('div');
-    window.className = 'window';
-    window.id = `window-${appName.replace(' ', '-')}`;
+    if (this.openWindows.has(appName)) {
+      const existing = this.openWindows.get(appName);
+      this.bringToFront(existing);
+      this.highlightTaskbarApp(appName);
+      return;
+    }
 
-    window.innerHTML = `
+    const windowEl = document.createElement('div');
+    windowEl.className = 'window';
+    windowEl.dataset.app = appName;
+    windowEl.id = `window-${appName.replace(/\s+/g, '-')}`;
+
+    const iconPath = this.appIcons[appName] || 'assets/icons/about-me.png';
+
+    windowEl.innerHTML = `
       <div class="window-header">
-        <div class="window-controls">
-          <button class="window-control window-close"></button>
-          <button class="window-control window-minimize"></button>
-          <button class="window-control window-maximize"></button>
-        </div>
+        <img src="${iconPath}" class="window-icon" alt="" onerror="this.style.display='none'">
         <div class="window-title">${appName}</div>
+        <div class="window-controls">
+          <button class="window-control window-minimize" title="Minimize">−</button>
+          <button class="window-control window-maximize" title="Maximize">□</button>
+          <button class="window-control window-close" title="Close">×</button>
+        </div>
       </div>
       <div class="window-content">
         ${this.getContentForApp(appName)}
       </div>
     `;
 
-    document.getElementById('windows-container').appendChild(window);
-    this.openWindows.add(appName);
+    document.getElementById('windows-container').appendChild(windowEl);
+    this.openWindows.set(appName, windowEl);
 
-    this.bringToFront(window);
+    const offset = this.openWindows.size * 30;
+    windowEl.style.top = `${50 + offset}px`;
+    windowEl.style.left = `${50 + offset}px`;
+    windowEl.style.transform = 'none';
 
-    window.addEventListener('mousedown', () => {
-      this.bringToFront(window);
-    });
+    this.bringToFront(windowEl);
+    this.addTaskbarApp(appName, iconPath);
+    this.setupWindowEvents(windowEl, appName);
 
-    window.querySelector('.window-close').addEventListener('click', () => {
-      this.closeWindow(appName);
-    });
-
-    window.querySelector('.window-maximize').addEventListener('click', () => {
-      this.toggleMaximize(window);
-    });
-
-    window.querySelectorAll('.collapsible-toggle').forEach(toggle => {
-      toggle.addEventListener('click', () => {
-        toggle.classList.toggle('active');
-        toggle.nextElementSibling.classList.toggle('active');
-
-        const dockItem = document.querySelector(`.dock-item[data-app="${appName}"]`);
-        if (dockItem) {
-          dockItem.classList.add('active');
-        }
-      });
-    });
-
-    this.makeWindowDraggable(window);
-
-if (appName === "Demo Reel") {
-  setTimeout(() => this.startDemoLoop(), 100);
-}
+    if (appName === 'Demo Reel') {
+      setTimeout(() => this.initDemoPlayer(), 100);
+    }
   }
 
   closeWindow(appName) {
-    const windowId = `window-${appName.replace(' ', '-')}`;
-    const window = document.getElementById(windowId);
+    const windowEl = this.openWindows.get(appName);
+    if (windowEl) {
+      windowEl.style.animation = 'none';
+      windowEl.style.opacity = '0';
+      windowEl.style.transform = 'scale(0.95)';
+      windowEl.style.transition = 'all 0.2s ease';
 
-    if (window) {
-      const wasMaximized = window.classList.contains('maximized');
-      window.remove();
-      this.openWindows.delete(appName);
-
-      if (wasMaximized) {
-        const anyMaximized = document.querySelector('.window.maximized');
-        const dock = document.getElementById('dock');
-
-        if (!anyMaximized) {
-          dock.classList.remove('hidden');
-        }
-      }
-    }
-
-    const dockItem = document.querySelector(`.dock-item[data-app="${appName}"]`);
-    if (dockItem) {
-      dockItem.classList.remove('active');
+      setTimeout(() => {
+        windowEl.remove();
+        this.openWindows.delete(appName);
+        this.removeTaskbarApp(appName);
+      }, 200);
     }
   }
 
-  toggleMaximize(window) {
-    const dock = document.getElementById('dock');
-    this.bringToFront(window);
+  bringToFront(windowEl) {
+    this.topZIndex += 1;
+    windowEl.style.zIndex = this.topZIndex;
+    const appName = this.getAppNameFromWindow(windowEl);
+    if (appName) this.highlightTaskbarApp(appName);
+  }
 
-    if (window.classList.contains('maximized')) {
-      window.classList.remove('maximized');
+  getAppNameFromWindow(windowEl) {
+    for (const [name, el] of this.openWindows) {
+      if (el === windowEl) return name;
+    }
+    return null;
+  }
 
-      if (window.dataset.wasDragged === 'true') {
-        window.style.top = window.dataset.originalTop;
-        window.style.left = window.dataset.originalLeft;
-        window.style.transform = 'none';
-      } else {
-        window.style.removeProperty('top');
-        window.style.removeProperty('left');
-        window.style.removeProperty('transform');
+  toggleMaximize(windowEl) {
+    const isMaximized = windowEl.classList.contains('maximized');
+
+    if (isMaximized) {
+      windowEl.classList.remove('maximized');
+      if (windowEl.dataset.prevTop) {
+        windowEl.style.top = windowEl.dataset.prevTop;
+        windowEl.style.left = windowEl.dataset.prevLeft;
+        windowEl.style.width = windowEl.dataset.prevWidth;
+        windowEl.style.height = windowEl.dataset.prevHeight;
       }
-
-      dock.classList.remove('hidden');
     } else {
-      if (window.style.top) {
-        window.dataset.wasDragged = 'true';
-        window.dataset.originalTop = window.style.top;
-        window.dataset.originalLeft = window.style.left;
-      } else {
-        window.dataset.wasDragged = 'false';
-      }
+      windowEl.dataset.prevTop = windowEl.style.top;
+      windowEl.dataset.prevLeft = windowEl.style.left;
+      windowEl.dataset.prevWidth = windowEl.style.width;
+      windowEl.dataset.prevHeight = windowEl.style.height;
+      windowEl.classList.add('maximized');
+    }
 
-      window.classList.add('maximized');
-      window.style.removeProperty('top');
-      window.style.removeProperty('left');
-      window.style.removeProperty('transform');
+    this.bringToFront(windowEl);
+  }
 
-      dock.classList.add('hidden');
+  minimizeWindow(appName) {
+    const windowEl = this.openWindows.get(appName);
+    if (windowEl) {
+      windowEl.style.display = 'none';
+      this.unhighlightTaskbarApp(appName);
     }
   }
 
-  makeWindowDraggable(window) {
-    const header = window.querySelector('.window-header');
+  restoreWindow(appName) {
+    const windowEl = this.openWindows.get(appName);
+    if (windowEl) {
+      windowEl.style.display = 'flex';
+      this.bringToFront(windowEl);
+      this.highlightTaskbarApp(appName);
+    }
+  }
 
+  setupWindowEvents(windowEl, appName) {
+    windowEl.querySelector('.window-close').addEventListener('click', () => {
+      this.closeWindow(appName);
+    });
+
+    windowEl.querySelector('.window-maximize').addEventListener('click', () => {
+      this.toggleMaximize(windowEl);
+    });
+
+    windowEl.querySelector('.window-minimize').addEventListener('click', () => {
+      this.minimizeWindow(appName);
+    });
+
+    windowEl.addEventListener('mousedown', () => {
+      this.bringToFront(windowEl);
+    });
+
+    const header = windowEl.querySelector('.window-header');
     header.addEventListener('mousedown', (e) => {
       if (e.target.classList.contains('window-control')) return;
+      if (windowEl.classList.contains('maximized')) return;
 
-      this.bringToFront(window);
-
-      this.draggedWindow = window;
-      const rect = window.getBoundingClientRect();
-
+      this.draggedWindow = windowEl;
+      const rect = windowEl.getBoundingClientRect();
       this.dragOffset.x = e.clientX - rect.left;
       this.dragOffset.y = e.clientY - rect.top;
-
-      window.classList.add('dragging');
-
+      windowEl.classList.add('dragging');
       e.preventDefault();
+    });
+
+    // Accordion toggles
+    windowEl.querySelectorAll('.accordion-header').forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        toggle.classList.toggle('active');
+        const content = toggle.nextElementSibling;
+        content.classList.toggle('active');
+      });
     });
   }
 
+  // ==================== TASKBAR APPS ====================
+  addTaskbarApp(appName, iconPath) {
+    const container = document.getElementById('taskbar-apps');
+    if (document.querySelector(`.taskbar-app[data-app="${appName}"]`)) return;
+
+    const btn = document.createElement('button');
+    btn.className = 'taskbar-app active';
+    btn.dataset.app = appName;
+    btn.innerHTML = `
+      <img src="${iconPath}" alt="" onerror="this.style.display='none'">
+      <span>${appName}</span>
+    `;
+
+    btn.addEventListener('click', () => {
+      const windowEl = this.openWindows.get(appName);
+      if (!windowEl) return;
+
+      if (windowEl.style.display === 'none') {
+        this.restoreWindow(appName);
+      } else if (this.getTopWindow() === windowEl) {
+        this.minimizeWindow(appName);
+      } else {
+        this.bringToFront(windowEl);
+      }
+    });
+
+    container.appendChild(btn);
+  }
+
+  removeTaskbarApp(appName) {
+    const btn = document.querySelector(`.taskbar-app[data-app="${appName}"]`);
+    if (btn) btn.remove();
+  }
+
+  highlightTaskbarApp(appName) {
+    document.querySelectorAll('.taskbar-app').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.app === appName);
+    });
+  }
+
+  unhighlightTaskbarApp(appName) {
+    const btn = document.querySelector(`.taskbar-app[data-app="${appName}"]`);
+    if (btn) btn.classList.remove('active');
+  }
+
+  getTopWindow() {
+    let topZ = 0;
+    let topWin = null;
+    this.openWindows.forEach((el) => {
+      const z = parseInt(el.style.zIndex || 0);
+      if (z > topZ) {
+        topZ = z;
+        topWin = el;
+      }
+    });
+    return topWin;
+  }
+
+  // ==================== GLOBAL MOUSE ====================
+  initializeGlobalMouse() {
+    document.addEventListener('mousemove', (e) => {
+      if (this.draggedWindow) {
+        const x = e.clientX - this.dragOffset.x;
+        const y = e.clientY - this.dragOffset.y;
+
+        const maxX = window.innerWidth - this.draggedWindow.offsetWidth;
+        const maxY = window.innerHeight - 48 - this.draggedWindow.offsetHeight;
+
+        this.draggedWindow.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
+        this.draggedWindow.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (this.draggedWindow) {
+        this.draggedWindow.classList.remove('dragging');
+        this.draggedWindow = null;
+      }
+    });
+  }
+
+  // ==================== DEMO PLAYER ====================
+  initDemoPlayer() {
+    const playlist = [
+      { title: 'WahHotSia', src: 'Videos/wahhotsia.mp4' },
+      { title: 'Into the Canvas', src: 'Videos/intothecanvas.mp4' },
+      { title: 'Vestige', src: 'Videos/vestige.mp4' }
+    ];
+
+    const player = document.getElementById('demoPlayer');
+    const titleEl = document.getElementById('demoVideoTitle');
+    const progressFill = document.getElementById('demoProgress');
+    const timeEl = document.getElementById('demoTime');
+    const playlistItems = document.querySelectorAll('.demo-playlist-item');
+    const playBtn = document.getElementById('demoPlayBtn');
+    const playlistPanel = document.getElementById('demoPlaylistPanel');
+    const togglePlaylistBtn = document.getElementById('demoTogglePlaylist');
+
+    if (!player) return;
+
+    let index = 0;
+
+    const updatePlayIcon = () => {
+      if (playBtn) {
+        playBtn.textContent = player.paused ? '▶' : '⏸';
+        playBtn.title = player.paused ? 'Play' : 'Pause';
+      }
+    };
+
+    const loadVideo = (i) => {
+      index = i;
+      const current = playlist[i];
+      player.src = current.src;
+      if (titleEl) titleEl.textContent = current.title;
+
+      playlistItems.forEach((item, idx) => {
+        item.classList.toggle('active', idx === i);
+      });
+
+      player.play().catch(() => {});
+      updatePlayIcon();
+    };
+
+    const playPause = () => {
+      if (player.paused) {
+        player.play().catch(() => {});
+      } else {
+        player.pause();
+      }
+      updatePlayIcon();
+    };
+
+    const next = () => {
+      loadVideo((index + 1) % playlist.length);
+    };
+
+    const prev = () => {
+      loadVideo((index - 1 + playlist.length) % playlist.length);
+    };
+
+    // Playlist clicks
+    playlistItems.forEach((item, idx) => {
+      item.addEventListener('click', () => {
+        loadVideo(idx);
+      });
+    });
+
+    // Controls
+    const nextBtn = document.getElementById('demoNextBtn');
+    const prevBtn = document.getElementById('demoPrevBtn');
+
+    if (playBtn) playBtn.addEventListener('click', playPause);
+    if (nextBtn) nextBtn.addEventListener('click', next);
+    if (prevBtn) prevBtn.addEventListener('click', prev);
+
+    // Toggle playlist visibility
+    if (togglePlaylistBtn && playlistPanel) {
+      togglePlaylistBtn.addEventListener('click', () => {
+        const isHidden = playlistPanel.style.display === 'none';
+        playlistPanel.style.display = isHidden ? 'flex' : 'none';
+        togglePlaylistBtn.textContent = isHidden ? '☰' : '▤';
+        togglePlaylistBtn.title = isHidden ? 'Hide playlist' : 'Show playlist';
+      });
+    }
+
+    // Update play icon on native events
+    player.addEventListener('play', updatePlayIcon);
+    player.addEventListener('pause', updatePlayIcon);
+
+    // Progress
+    player.addEventListener('timeupdate', () => {
+      if (player.duration && progressFill) {
+        const pct = (player.currentTime / player.duration) * 100;
+        progressFill.style.width = pct + '%';
+      }
+      if (timeEl && player.duration) {
+        const cur = this.formatTime(player.currentTime);
+        const dur = this.formatTime(player.duration);
+        timeEl.textContent = `${cur} / ${dur}`;
+      }
+    });
+
+    player.addEventListener('ended', () => {
+      next();
+    });
+
+    // Progress bar click
+    const progressBar = document.getElementById('demoProgressBar');
+    if (progressBar) {
+      progressBar.addEventListener('click', (e) => {
+        const rect = progressBar.getBoundingClientRect();
+        const pct = (e.clientX - rect.left) / rect.width;
+        if (player.duration) {
+          player.currentTime = pct * player.duration;
+        }
+      });
+    }
+
+    loadVideo(0);
+    updatePlayIcon();
+  }
+
+  formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  // ==================== CONTENT ====================
   getContentForApp(appName) {
     switch(appName) {
-      case 'Certificate':
-        return `
-          <div class="page-shell">
-            <div class="page-hero">
-              <h2>My Certificates</h2>
-              <div class="page-subtitle">Courses and certifications that support my development journey</div>
-            </div>
-
-            <div class="cert-grid">
-              <div class="cert-card">
-                <h3>AWS for Game</h3>
-                <img class="cert-image" src="Cert/Cert1.png" alt="AWS for Game Certificate">
-              </div>
-
-              <div class="cert-card">
-                <h3>Introduction to Python</h3>
-                <img class="cert-image" src="Cert/Cert2.png" alt="Introduction to Python Certificate">
-              </div>
-
-              <div class="cert-card">
-                <h3>Blockchain Essentials</h3>
-                <img class="cert-image" src="Cert/Cert3.png" alt="Blockchain Essentials Certificate">
-              </div>
-
-              <div class="cert-card">
-                <h3>Introduction to Cloud</h3>
-                <img class="cert-image" src="Cert/Cert4.png" alt="Introduction to Cloud Certificate">
-              </div>
-
-              <div class="cert-card">
-                <h3>Data Science 101</h3>
-                <img class="cert-image" src="Cert/Cert5.png" alt="Data Science 101 Certificate">
-              </div>
-            </div>
-          </div>
-        `;
-
       case 'About Me':
         return `
           <div class="page-shell">
-            <div class="page-hero">
-              <h2>Zheng Bo</h2>
-              <div class="page-subtitle">Game Developer · Gameplay Programmer · UI Systems Builder</div>
+            <div class="app-bar">
+              <img src="assets/icons/about-me.png" class="app-bar-icon" alt="" onerror="this.style.display='none'">
+              <span class="app-bar-title">About Me</span>
+
             </div>
-
-            <div class="about-layout">
-              <div class="section-card">
-                <div class="section-title">
-                  <h3>About Me</h3>
-                  <span>Creative + Technical</span>
+            <div class="app-content">
+              <div class="material-card">
+                <div class="material-card-title">👤 Zheng Bo</div>
+                <div class="material-card-text">
+                  Game Development student at Nanyang Polytechnic. I build gameplay systems, UI, and tools 
+                  in Unity and Unreal Engine. I enjoy turning ideas into polished, playable experiences 
+                  through both solo and team-based projects.
                 </div>
-                <p class="about-text">
-                  I am a Game Development student at Nanyang Polytechnic with experience working on both
-                  solo and team-based projects. I enjoy building gameplay systems, experimenting with mechanics,
-                  and turning ideas into polished playable experiences.
-                </p>
-                <p class="about-text" style="margin-top:12px;">
-                  My work spans Unity and Unreal Engine projects, with a focus on gameplay programming,
-                  UI systems, technical problem-solving, and collaboration in multidisciplinary teams.
-                </p>
-              </div>
-
-              <div class="section-card">
-                <div class="section-title">
-                  <h3>Focus Areas</h3>
-                  <span>What I enjoy</span>
-                </div>
-                <div class="tags-row">
-                  <span class="soft-label">🎮 Gameplay Systems</span>
-                  <span class="soft-label">🧩 UI/UX</span>
-                  <span class="soft-label">🛠 Tools & Workflows</span>
-                  <span class="soft-label">✨ Game Feel</span>
+                <div style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;">
+                  <span class="chip chip-blue">🎮 Gameplay Systems</span>
+                  <span class="chip chip-green">🧩 UI/UX</span>
+                  <span class="chip chip-yellow">🛠 Tools & Workflows</span>
+                  <span class="chip chip-red">✨ Game Feel</span>
                 </div>
               </div>
-            </div>
 
-            <div class="section-card">
-              <div class="section-title">
-                <h3>Skills</h3>
-                <span>Tech Stack</span>
-              </div>
-              <div class="skill-cloud">
-                <span class="skill-pill">JavaScript</span>
-                <span class="skill-pill">HTML</span>
-                <span class="skill-pill">CSS</span>
-                <span class="skill-pill">C++</span>
-                <span class="skill-pill">Java</span>
-                <span class="skill-pill">MySQL</span>
-                <span class="skill-pill">C#</span>
-                <span class="skill-pill">Unity</span>
-                <span class="skill-pill">Unreal Engine</span>
+              <div class="material-card">
+                <div class="material-card-title">🛠 Tech Stack</div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <span class="chip">JavaScript</span>
+                  <span class="chip">HTML</span>
+                  <span class="chip">CSS</span>
+                  <span class="chip">C++</span>
+                  <span class="chip">Java</span>
+                  <span class="chip">MySQL</span>
+                  <span class="chip">C#</span>
+                  <span class="chip chip-blue">Unity</span>
+                  <span class="chip chip-blue">Unreal Engine</span>
+                </div>
               </div>
             </div>
-          </div>
-        `;
+          </div>`;
 
       case 'My Projects':
         return `
           <div class="page-shell">
-            <div class="page-hero">
-              <h2>My Projects</h2>
-              <div class="page-subtitle">Selected works in gameplay programming, UI systems, and technical design</div>
-            </div>
-
-            <div class="page-grid">
-
-              <div class="project-card">
-                <h3>WahHotSia</h3>
-                <p>
-                  A social 3D room-building game where players design rooms, receive suggestions
-                  for improvements, visualize wind flow, and explore other players’ creations
-                  through a feature page.
-                </p>
-
-                <div class="collapsible-section">
-                  <button class="collapsible-toggle">
-                    <span class="toggle-arrow">▶</span>
-                    <span class="toggle-label">What I Did</span>
-                  </button>
-                  <div class="collapsible-content">
-                    <ul>
-                      <li>Built a 3D room-building system for players to design and customize interior spaces.</li>
-                      <li>Implemented a suggestion system to help improve room layouts and placement decisions.</li>
-                      <li>Developed a wind flow visualization feature to show how air moves through the designed room.</li>
-                      <li>Created a feature page where players can browse and view other users’ room designs.</li>
-                      <li>Worked on gameplay systems and user experience features to support social sharing and room planning.</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="tags-row">
-                  <span class="tag-pill">Unity</span>
-                  <span class="tag-pill">C#</span>
-                </div>
-
-                <a href="https://www.youtube.com/watch?v=0uS9ZIcvuJA" target="_blank" rel="noopener">
-                  <img class="project-thumb" src="https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg" alt="WahHotSia thumbnail">
-                </a>
-              </div>
-
-              <div class="project-card">
-                <h3>Into the Canvas</h3>
-                <p>
-                  An internship couch co-op project where players use paint mechanics
-                  to solve puzzles together.
-                </p>
-
-                <div class="collapsible-section">
-                  <button class="collapsible-toggle">
-                    <span class="toggle-arrow">▶</span>
-                    <span class="toggle-label">What I Did</span>
-                  </button>
-                  <div class="collapsible-content">
-                    <ul>
-                      <li>Designed and implemented a modular UI system to support reusable menus and scalable UI flows.</li>
-                      <li>Built a custom UnityEvent-style system with an improved Inspector that supports multiple parameters.</li>
-                      <li>Developed custom toon shaders for 3D models.</li>
-                      <li>Integrated UI animations with polish effects such as gradient backgrounds and selection feedback.</li>
-                      <li>Implemented player stats and timer systems, along with game and audio settings menus.</li>
-                      <li>Added controller-friendly UX features including auto-scrolling settings navigation.</li>
-                      <li>Implemented procedural mesh destruction compatible with any mesh.</li>
-                      <li>Prototyped obstacle mechanics and player throwing trajectory, then handed off to a teammate for final integration.</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="tags-row">
-                  <span class="tag-pill">Unity</span>
-                  <span class="tag-pill">C#</span>
-                  <span class="tag-pill">Internship</span>
-                </div>
-
-                <a href="https://www.youtube.com/watch?v=kYTfj2U4430" target="_blank" rel="noopener">
-                  <img class="project-thumb" src="https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg" alt="Into the Canvas thumbnail">
-                </a>
-              </div>
-
-              <div class="project-card">
-                <h3>Vestige</h3>
-                <p>
-                  A story-driven 3D side-scroller built in Unreal Engine,
-                  focusing on dream-like environments and emotional progression.
-                </p>
-
-                <div class="collapsible-section">
-                  <button class="collapsible-toggle">
-                    <span class="toggle-arrow">▶</span>
-                    <span class="toggle-label">What I Did</span>
-                  </button>
-                  <div class="collapsible-content">
-                    <ul>
-                      <li>Implemented player movement including push/pull, hang, climb, and elevators.</li>
-                      <li>Developed advanced camera systems with dead-zones, smoothing, and dynamic FOV.</li>
-                      <li>Built interaction and item inspection systems.</li>
-                      <li>Implemented quest system and full game UI.</li>
-                      <li>Created saving and loading systems.</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="tags-row">
-                  <span class="tag-pill">Unreal Engine</span>
-                </div>
-
-                <a href="https://www.youtube.com/watch?v=ULQUVjG7M-s" target="_blank" rel="noopener">
-                  <img class="project-thumb" src="https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg" alt="Vestige thumbnail">
-                </a>
-              </div>
-
-              <div class="project-card">
-                <h3>Echoes Of Virtue</h3>
-                <p>
-                  A group project based around sustainability goals of peace, justice,
-                  and strong institutions.
-                </p>
-
-                <div class="collapsible-section">
-                  <button class="collapsible-toggle">
-                    <span class="toggle-arrow">▶</span>
-                    <span class="toggle-label">What I Did</span>
-                  </button>
-                  <div class="collapsible-content">
-                    <ul>
-                      <li>Implemented player controller and core gameplay systems.</li>
-                      <li>Built world-switching mechanics between past and future states.</li>
-                      <li>Developed doors that transition between scenes.</li>
-                      <li>Created enemies, moving platforms, and interactive elements.</li>
-                      <li>Designed and built multiple gameplay levels.</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="tags-row">
-                  <span class="tag-pill">Unity</span>
-                  <span class="tag-pill">C#</span>
-                </div>
-
-                <a href="https://www.youtube.com/watch?v=8CkgqogTGeM" target="_blank" rel="noopener">
-                  <img class="project-thumb" src="https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg" alt="Echoes Of Virtue thumbnail">
-                </a>
-              </div>
-
-              <div class="project-card">
-                <h3>Boat</h3>
-                <p>
-                  A group project based on the open-world survival genre.
-                </p>
-
-                <div class="collapsible-section">
-                  <button class="collapsible-toggle">
-                    <span class="toggle-arrow">▶</span>
-                    <span class="toggle-label">What I Did</span>
-                  </button>
-                  <div class="collapsible-content">
-                    <ul>
-                      <li>Designed and implemented the game UI.</li>
-                      <li>Extended the framework’s scene manager to support multiple scenes.</li>
-                      <li>Enabled parallel level development for open-world gameplay.</li>
-                      <li>Created cutscenes and physics-based systems.</li>
-                      <li>Designed and built the OilRig level.</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="tags-row">
-                  <span class="tag-pill">C++</span>
-                  <span class="tag-pill">OpenGL</span>
-                </div>
-
-                <a href="https://www.youtube.com/watch?v=P6keUXjFF40" target="_blank" rel="noopener">
-                  <img class="project-thumb" src="https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg" alt="Boat thumbnail">
-                </a>
-              </div>
+            <div class="app-bar">
+              <img src="assets/icons/my-projects.png" class="app-bar-icon" alt="" onerror="this.style.display='none'">
+              <span class="app-bar-title">My Projects</span>
 
             </div>
-          </div>
-        `;
-case 'Demo Reel':
-  return `
-    <div class="demo-reel-shell">
-<video id="demoPlayer" class="demo-video" autoplay playsinline controls></video>
-      <div class="demo-overlay">
-        <div id="demoTitle" class="demo-title">WahHotSia</div>
-      </div>
-    </div>
-  `;
+            <div class="app-content">
+              <div class="material-grid">
+
+                <div class="material-card">
+                  <div class="material-card-title">WahHotSia</div>
+                  <div class="material-card-text">A social 3D room-building game where players design rooms, receive suggestions, visualize wind flow, and explore other players' creations.</div>
+                  <div class="accordion">
+                    <button class="accordion-header">
+                      <span>What I Did</span>
+                      <span class="accordion-arrow">▼</span>
+                    </button>
+                    <div class="accordion-body">
+                      <ul>
+                        <li>Built a 3D room-building system for interior design</li>
+                        <li>Implemented suggestion system for layout improvements</li>
+                        <li>Developed wind flow visualization feature</li>
+                        <li>Created feature page for browsing user designs</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div style="margin-top:12px;">
+                    <span class="chip chip-blue">Unity</span>
+                    <span class="chip chip-green">C#</span>
+                  </div>
+                  <a href="https://www.youtube.com/watch?v=0uS9ZIcvuJA" target="_blank" rel="noopener" class="thumb-link">
+                    <img src="https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg" alt="WahHotSia">
+                  </a>
+                </div>
+
+                <div class="material-card">
+                  <div class="material-card-title">Into the Canvas</div>
+                  <div class="material-card-text">An internship couch co-op project where players use paint mechanics to solve puzzles together.</div>
+                  <div class="accordion">
+                    <button class="accordion-header">
+                      <span>What I Did</span>
+                      <span class="accordion-arrow">▼</span>
+                    </button>
+                    <div class="accordion-body">
+                      <ul>
+                        <li>Designed modular UI system with reusable menus</li>
+                        <li>Built custom UnityEvent-style system with multi-parameter support</li>
+                        <li>Developed custom toon shaders for 3D models</li>
+                        <li>Implemented player stats, timer, and settings systems</li>
+                        <li>Added procedural mesh destruction compatible with any mesh</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div style="margin-top:12px;">
+                    <span class="chip chip-blue">Unity</span>
+                    <span class="chip chip-green">C#</span>
+                    <span class="chip chip-yellow">Internship</span>
+                  </div>
+                  <a href="https://www.youtube.com/watch?v=kYTfj2U4430" target="_blank" rel="noopener" class="thumb-link">
+                    <img src="https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg" alt="Into the Canvas">
+                  </a>
+                </div>
+
+                <div class="material-card">
+                  <div class="material-card-title">Vestige</div>
+                  <div class="material-card-text">A story-driven 3D side-scroller in Unreal Engine with dream-like environments and emotional progression.</div>
+                  <div class="accordion">
+                    <button class="accordion-header">
+                      <span>What I Did</span>
+                      <span class="accordion-arrow">▼</span>
+                    </button>
+                    <div class="accordion-body">
+                      <ul>
+                        <li>Implemented player movement: push/pull, hang, climb, elevators</li>
+                        <li>Developed advanced camera systems with dead-zones and dynamic FOV</li>
+                        <li>Built interaction, item inspection, and quest systems</li>
+                        <li>Created saving/loading systems and full game UI</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div style="margin-top:12px;">
+                    <span class="chip chip-red">Unreal Engine</span>
+                  </div>
+                  <a href="https://www.youtube.com/watch?v=ULQUVjG7M-s" target="_blank" rel="noopener" class="thumb-link">
+                    <img src="https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg" alt="Vestige">
+                  </a>
+                </div>
+
+                <div class="material-card">
+                  <div class="material-card-title">Echoes Of Virtue</div>
+                  <div class="material-card-text">A group project based on sustainability goals of peace, justice, and strong institutions.</div>
+                  <div class="accordion">
+                    <button class="accordion-header">
+                      <span>What I Did</span>
+                      <span class="accordion-arrow">▼</span>
+                    </button>
+                    <div class="accordion-body">
+                      <ul>
+                        <li>Implemented player controller and core gameplay systems</li>
+                        <li>Built world-switching mechanics between past and future</li>
+                        <li>Developed scene-transition doors and interactive elements</li>
+                        <li>Created enemies, moving platforms, and multiple gameplay levels</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div style="margin-top:12px;">
+                    <span class="chip chip-blue">Unity</span>
+                    <span class="chip chip-green">C#</span>
+                  </div>
+                  <a href="https://www.youtube.com/watch?v=8CkgqogTGeM" target="_blank" rel="noopener" class="thumb-link">
+                    <img src="https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg" alt="Echoes Of Virtue">
+                  </a>
+                </div>
+
+                <div class="material-card">
+                  <div class="material-card-title">Boat</div>
+                  <div class="material-card-text">A group project based on the open-world survival genre.</div>
+                  <div class="accordion">
+                    <button class="accordion-header">
+                      <span>What I Did</span>
+                      <span class="accordion-arrow">▼</span>
+                    </button>
+                    <div class="accordion-body">
+                      <ul>
+                        <li>Designed and implemented game UI</li>
+                        <li>Extended framework's scene manager for multiple scenes</li>
+                        <li>Enabled parallel level development for open-world gameplay</li>
+                        <li>Created cutscenes and physics-based systems</li>
+                        <li>Designed and built the OilRig level</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div style="margin-top:12px;">
+                    <span class="chip chip-yellow">C++</span>
+                    <span class="chip chip-green">OpenGL</span>
+                  </div>
+                  <a href="https://www.youtube.com/watch?v=P6keUXjFF40" target="_blank" rel="noopener" class="thumb-link">
+                    <img src="https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg" alt="Boat">
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </div>`;
+
+      case 'Certificate':
+        return `
+          <div class="page-shell">
+            <div class="app-bar">
+              <img src="assets/icons/certificate.png" class="app-bar-icon" alt="" onerror="this.style.display='none'">
+              <span class="app-bar-title">Certificates</span>
+
+            </div>
+            <div class="app-content">
+              <div class="material-grid">
+                <div class="material-card">
+                  <div class="material-card-title">AWS for Game</div>
+                  <img class="cert-img" src="Cert/Cert1.png" alt="AWS for Game">
+                </div>
+                <div class="material-card">
+                  <div class="material-card-title">Introduction to Python</div>
+                  <img class="cert-img" src="Cert/Cert2.png" alt="Python">
+                </div>
+                <div class="material-card">
+                  <div class="material-card-title">Blockchain Essentials</div>
+                  <img class="cert-img" src="Cert/Cert3.png" alt="Blockchain">
+                </div>
+                <div class="material-card">
+                  <div class="material-card-title">Introduction to Cloud</div>
+                  <img class="cert-img" src="Cert/Cert4.png" alt="Cloud">
+                </div>
+                <div class="material-card">
+                  <div class="material-card-title">Data Science 101</div>
+                  <img class="cert-img" src="Cert/Cert5.png" alt="Data Science">
+                </div>
+              </div>
+            </div>
+          </div>`;
+
+      case 'Demo Reel':
+        return `
+          <div class="demo-player-shell">
+            <div style="display:flex; flex:1; min-height:0;">
+              <div class="demo-video-area">
+                <video id="demoPlayer" playsinline></video>
+                <div id="demoVideoTitle" class="demo-video-title">WahHotSia</div>
+              </div>
+              <div class="demo-playlist" id="demoPlaylistPanel">
+                <div class="demo-playlist-header">Playlist</div>
+                <div class="demo-playlist-item active" data-idx="0">
+                  <span class="pl-num">1</span>
+                  <span>WahHotSia</span>
+                </div>
+                <div class="demo-playlist-item" data-idx="1">
+                  <span class="pl-num">2</span>
+                  <span>Into the Canvas</span>
+                </div>
+                <div class="demo-playlist-item" data-idx="2">
+                  <span class="pl-num">3</span>
+                  <span>Vestige</span>
+                </div>
+              </div>
+            </div>
+            <div class="demo-controls">
+              <button class="demo-ctrl-btn" id="demoPrevBtn" title="Previous">⏮</button>
+              <button class="demo-ctrl-btn" id="demoPlayBtn" title="Play">▶</button>
+              <button class="demo-ctrl-btn" id="demoNextBtn" title="Next">⏭</button>
+              <div class="demo-progress" id="demoProgressBar">
+                <div class="demo-progress-fill" id="demoProgress"></div>
+              </div>
+              <span class="demo-time" id="demoTime">0:00 / 0:00</span>
+              <button class="demo-ctrl-btn" id="demoTogglePlaylist" title="Hide playlist" style="margin-left:8px;">☰</button>
+            </div>
+          </div>`;
 
       default:
         return '<p>Content not available</p>';
@@ -501,79 +784,36 @@ case 'Demo Reel':
   }
 }
 
+// ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
   const app = new DesktopApp();
   window.desktopAppInstance = app;
+  app.initializeGlobalMouse();
 
   document.addEventListener('keydown', (e) => {
-  if (e.key.toLowerCase() === 'd') {
-    const app = window.desktopAppInstance;
-    const existing = document.getElementById('window-Demo-Reel');
-
-    if (!existing) {
-      app.openWindow("Demo Reel");
-
-      const win = document.getElementById('window-Demo-Reel');
-      if (win) {
-        app.toggleMaximize(win);
+    if (e.key.toLowerCase() === 'd') {
+      const existing = document.getElementById('window-Demo-Reel');
+      if (!existing) {
+        app.openWindow('Demo Reel');
+        setTimeout(() => {
+          const win = document.getElementById('window-Demo-Reel');
+          if (win) app.toggleMaximize(win);
+        }, 150);
+      } else {
+        app.bringToFront(existing);
       }
-    } else {
-      app.bringToFront(existing);
-    }
-  }
-});
-
-  document.addEventListener('mousemove', (e) => {
-    if (app.draggedWindow) {
-      const x = e.clientX - app.dragOffset.x;
-      const y = e.clientY - app.dragOffset.y;
-
-      const maxX = window.innerWidth - app.draggedWindow.offsetWidth;
-      const maxY = window.innerHeight - app.draggedWindow.offsetHeight;
-
-      const boundedX = Math.max(0, Math.min(x, maxX));
-      const boundedY = Math.max(0, Math.min(y, maxY));
-
-      app.draggedWindow.style.left = boundedX + 'px';
-      app.draggedWindow.style.top = boundedY + 'px';
-      app.draggedWindow.style.transform = 'none';
-      app.draggedWindow.style.right = 'auto';
-      app.draggedWindow.style.bottom = 'auto';
     }
   });
 
-  document.addEventListener('mouseup', () => {
-    if (app.draggedWindow) {
-      app.draggedWindow.classList.remove('dragging');
-      app.draggedWindow = null;
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
     }
-  });
-
-  function enterDesktop() {
-  document.getElementById("login-screen").style.display = "none";
-  document.getElementById("desktop").style.display = "block";
-}
-
-document.getElementById("login-btn").addEventListener("click", () => {
-  const password = document.getElementById("password").value;
-
-  if (password === "123") {
-    enterDesktop();
-  } else {
-    alert("Wrong password");
-  }
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    const password = document.getElementById("password").value;
-
-    if (password === "123") {
-      enterDesktop();
-    } else {
-      alert("Wrong password");
-    }
-  }
-});
-
+  `;
+  document.head.appendChild(style);
 });

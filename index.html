@@ -3,35 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio</title>
-  <meta name="" content="Game Dev Portfolio" />
+  <title>Zheng Bo — Portfolio</title>
   <link rel="stylesheet" href="styles.css">
+<base target="_blank">
+<base target="_blank">
 </head>
 <body>
-  <!-- LOGIN SCREEN -->
-<div id="login-screen">
-  <div class="login-panel">
-    <h1 class="login-name">Zhengbo's Portfolio</h1>
 
-    <div class="password-wrap">
-      <input type="password" id="password" placeholder="Enter Password" />
-      <button id="login-btn" class="login-arrow" aria-label="Login">→</button>
+  <!-- ==================== LOGIN SCREEN ==================== -->
+  <div id="login-screen">
+    <div class="login-panel">
+      <div class="login-avatar">
+        <img src="assets/icons/about-me.png" alt="Avatar" id="login-avatar-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="login-avatar-fallback" style="display:none;">ZB</div>
+      </div>
+      <h1 class="login-name">Zheng Bo</h1>
+
+      <div class="password-wrap">
+        <input type="password" id="password" placeholder="Enter Password" />
+        <button id="login-btn" class="login-arrow" aria-label="Login">→</button>
+      </div>
+
+      <div class="password-hint">Password hint: 123</div>
+    </div>
+  </div>
+
+  <!-- ==================== DESKTOP ==================== -->
+  <div id="desktop" style="display:none;">
+
+    <!-- Desktop Icons (Left Sidebar) -->
+    <div id="desktop-icons">
+      <div class="desktop-icon" data-app="About Me">
+        <img src="assets/icons/about-me.png" alt="About Me" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="icon-fallback" style="display:none;">👤</div>
+        <span>About Me</span>
+      </div>
+      <div class="desktop-icon" data-app="My Projects">
+        <img src="assets/icons/my-projects.png" alt="My Projects" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="icon-fallback" style="display:none;">💼</div>
+        <span>My Projects</span>
+      </div>
+      <div class="desktop-icon" data-app="Certificate">
+        <img src="assets/icons/certificate.png" alt="Certificate" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="icon-fallback" style="display:none;">📜</div>
+        <span>Certificate</span>
+      </div>
+      <div class="desktop-icon" data-app="Demo Reel">
+        <img src="assets/icons/demo-reel.png" alt="Demo Reel" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="icon-fallback" style="display:none;">🎬</div>
+        <span>Demo Reel</span>
+      </div>
     </div>
 
-    <div class="password-hint">Password hint: 123</div>
-  </div>
-</div>
-
-  <!-- DESKTOP -->
-  <div id="desktop" style="display:none;">
+    <!-- Windows Container -->
     <div id="windows-container"></div>
-    <div id="dock">
-      <button class="dock-item" data-app="About Me">👤</button>
-      <button class="dock-item" data-app="My Projects">💼</button>
-      <button class="dock-item" data-app="Certificate">📜</button>
+
+    <!-- Taskbar -->
+    <div id="taskbar">
+      <button id="start-btn" class="taskbar-item" title="Start">
+        <img src="assets/icons/file-explorer.png" alt="Start" onerror="this.style.display='none';this.parentElement.textContent='🪟';this.parentElement.style.fontSize='20px';">
+      </button>
+
+      <!-- Pinned Apps -->
+      <div id="taskbar-pinned">
+        <button class="taskbar-pin" data-app="About Me" title="About Me">
+          <img src="assets/icons/about-me.png" alt="" onerror="this.style.display='none';this.parentElement.textContent='👤';this.parentElement.style.fontSize='16px';">
+        </button>
+        <button class="taskbar-pin" data-app="My Projects" title="My Projects">
+          <img src="assets/icons/my-projects.png" alt="" onerror="this.style.display='none';this.parentElement.textContent='💼';this.parentElement.style.fontSize='16px';">
+        </button>
+        <button class="taskbar-pin" data-app="Certificate" title="Certificate">
+          <img src="assets/icons/certificate.png" alt="" onerror="this.style.display='none';this.parentElement.textContent='📜';this.parentElement.style.fontSize='16px';">
+        </button>
+        <button class="taskbar-pin" data-app="Demo Reel" title="Demo Reel">
+          <img src="assets/icons/demo-reel.png" alt="" onerror="this.style.display='none';this.parentElement.textContent='🎬';this.parentElement.style.fontSize='16px';">
+        </button>
+      </div>
+
+      <div class="taskbar-divider"></div>
+
+      <div id="taskbar-apps"></div>
+      <div id="taskbar-tray">
+        <span id="clock">19:36</span>
+        <span id="date">05/27/2026</span>
+      </div>
+    </div>
+
+    <!-- Start Menu (hidden by default) -->
+    <div id="start-menu" style="display:none;">
+      <div class="start-menu-header">
+        <img src="assets/icons/about-me.png" alt="User" onerror="this.style.display='none';this.nextElementSibling.style.marginLeft='0';">
+        <span>Zheng Bo</span>
+      </div>
+      <div class="start-menu-apps">
+        <div class="start-menu-item" data-app="About Me">
+          <img src="assets/icons/about-me.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.marginLeft='0';">
+          <span>About Me</span>
+        </div>
+        <div class="start-menu-item" data-app="My Projects">
+          <img src="assets/icons/my-projects.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.marginLeft='0';">
+          <span>My Projects</span>
+        </div>
+        <div class="start-menu-item" data-app="Certificate">
+          <img src="assets/icons/certificate.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.marginLeft='0';">
+          <span>Certificate</span>
+        </div>
+        <div class="start-menu-item" data-app="Demo Reel">
+          <img src="assets/icons/demo-reel.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.marginLeft='0';">
+          <span>Demo Reel</span>
+        </div>
+      </div>
+      <div class="start-menu-footer">
+        <button id="shutdown-btn">Shut down</button>
+      </div>
     </div>
   </div>
 
   <script src="scripts.js"></script>
 </body>
-</htm
+</html>
