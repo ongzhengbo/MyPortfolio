@@ -1,5 +1,4 @@
-﻿// STEAM PROJECTS v2 - Cache bust: 1779978241.2868285
-const projectsData = [
+﻿const projectsData = [
   {
     id: 'wahhotsia',
     title: 'WahHotSia',
@@ -9,7 +8,7 @@ const projectsData = [
     thumbnail: 'https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=0uS9ZIcvuJA',
     screenshots: ['https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg','https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg','https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg','https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg'],
-    status: 'Completed', year: '2026', team: 'Team Project', role: 'Gameplay Programmer', featured: true
+    status: 'Completed', year: '2026', team: 'Solo Project', role: 'Programmer', featured: true
   },
   {
     id: 'intothecanvas',
@@ -20,7 +19,7 @@ const projectsData = [
     thumbnail: 'https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=kYTfj2U4430',
     screenshots: ['https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg','https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg','https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg'],
-    status: 'Completed', year: '2025', team: 'Internship', role: 'Game Developer', featured: true
+    status: 'Completed', year: '2025', team: 'Internship', role: 'Game Programmer', featured: true
   },
   {
     id: 'vestige',
@@ -42,7 +41,7 @@ const projectsData = [
     thumbnail: 'https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=8CkgqogTGeM',
     screenshots: ['https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg','https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg'],
-    status: 'Completed', year: '2024', team: 'Group Project', role: 'Programmer', featured: false
+    status: 'Completed', year: '2024', team: 'Group Project', role: 'Gameplay Programmer', featured: false
   },
   {
     id: 'boat',
@@ -53,7 +52,7 @@ const projectsData = [
     thumbnail: 'https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg',
     videoUrl: 'https://www.youtube.com/watch?v=P6keUXjFF40',
     screenshots: ['https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg','https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg'],
-    status: 'Completed', year: '2023', team: 'Group Project', role: 'Programmer & UI Designer', featured: false
+    status: 'Completed', year: '2023', team: 'Group Project', role: 'Programmer', featured: false
   }
 ];
 
@@ -81,6 +80,15 @@ class DesktopApp {
       'My Projects': { width: 820, height: 620, minWidth: 500, minHeight: 400 },
       'Certificate': { width: 700, height: 580, minWidth: 450, minHeight: 380 },
       'Demo Reel': { width: 900, height: 560, minWidth: 560, minHeight: 380 }
+    };
+
+    // Per-window decoration config: image, position, scale
+    // Format: { image: 'path', top: 'px/%', right: 'px/%', width: 'px', height: 'px', opacity: 0-1 }
+    this.windowDecor = {
+      'About Me':       { image: 'assets/decor/tigerIcon1.png',    top: '-160px',  right: '370px',  width: '200px', height: '200px', opacity: 1 },
+      'My Projects':    { image: 'assets/decor/tigerIcon2.png', top: '-100px',  right: '500px', width: '200px', height: '200px', opacity: 1 },
+      'Certificate':    { image: 'assets/decor/tigerIcon4.png',     top: '-120px',  right: '250px',  width: '200px',  height: '200px',  opacity: 1 },
+      'Demo Reel':      { image: 'assets/decor/tigerIcon3.png',     top: '-115px',  right: '110px', width: '150px', height: '150px', opacity: 1 }
     };
 
     this.resizedWindow = null;
@@ -243,6 +251,7 @@ openWindow(appName) {
   const iconPath = this.appIcons[appName] || 'assets/icons/about-me.png';
 
   windowEl.innerHTML = `
+    <div class="window-decor"></div>
     <div class="window-header">
       <img src="${iconPath}" class="window-icon" alt="" onerror="this.style.display='none'">
       <div class="window-title">${appName}</div>
@@ -308,11 +317,60 @@ openWindow(appName) {
     if (appName === 'Demo Reel') {
     setTimeout(() => this.initDemoPlayer(), 100);
   }
+
+  // Apply per-window decoration
+  this.applyWindowDecor(windowEl, appName);
 }
+
+  // Apply decoration styles from config to a window element
+  applyWindowDecor(windowEl, appName) {
+    const decorEl = windowEl.querySelector('.window-decor');
+    if (!decorEl) return;
+
+    const cfg = this.windowDecor[appName];
+    if (!cfg) {
+      // No config for this window — hide decoration
+      decorEl.style.display = 'none';
+      return;
+    }
+
+    decorEl.style.display = 'block';
+    decorEl.style.backgroundImage = `url('${cfg.image}')`;
+    decorEl.style.top = cfg.top || '-60px';
+    decorEl.style.right = cfg.right || '80px';
+    decorEl.style.width = cfg.width || '100px';
+    decorEl.style.height = cfg.height || '100px';
+    decorEl.style.opacity = cfg.opacity !== undefined ? cfg.opacity : 0.9;
+
+    // Optional: custom background-size (default 'contain' preserves aspect ratio)
+    decorEl.style.backgroundSize = cfg.size || 'contain';
+  }
+
+  // Swap decoration image when a window closes (called before close animation)
+  swapDecorOnClose(appName) {
+    const windowEl = this.openWindows.get(appName);
+    if (!windowEl) return;
+    const decorEl = windowEl.querySelector('.window-decor');
+    if (!decorEl) return;
+
+    // Example: swap to a "closing" variant or fade out
+    // You can customize this per app in windowDecor with a 'closeImage' key
+    const cfg = this.windowDecor[appName];
+    if (cfg && cfg.closeImage) {
+      decorEl.style.backgroundImage = `url('${cfg.closeImage}')`;
+    }
+    // Fade out effect
+    decorEl.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    decorEl.style.opacity = '0';
+    decorEl.style.transform = 'scale(0.8)';
+  }
 
   closeWindow(appName) {
     const windowEl = this.openWindows.get(appName);
     if (windowEl) {
+      // Swap/fade decoration before closing
+      this.swapDecorOnClose(appName);
+
       windowEl.style.animation = 'none';
       windowEl.style.opacity = '0';
       windowEl.style.transform = 'scale(0.95)';
@@ -1131,20 +1189,8 @@ openWindow(appName) {
                 </div>
               </div>
 
-              <div class="linkedin-experience-item">
-                <div class="linkedin-exp-icon">🎮</div>
-                <div class="linkedin-exp-content">
-                  <h3 class="linkedin-exp-title">Gameplay Programmer</h3>
-                  <p class="linkedin-exp-company">Vestige (Student Project)</p>
-                  <p class="linkedin-exp-date">Sep 2025 – Dec 2025 · 4 mos</p>
-                  <p class="linkedin-exp-location">Nanyang Polytechnic</p>
-                  <ul class="linkedin-exp-list">
-                    <li>Implemented player movement: push/pull, hang, climb, elevators</li>
-                    <li>Developed advanced camera systems with dead-zones and dynamic FOV</li>
-                    <li>Built interaction, item inspection, and quest systems</li>
-                    <li>Created saving/loading systems and full game UI</li>
-                  </ul>
-                </div>
+              
+
               </div>
             </div>
 
@@ -1156,7 +1202,7 @@ openWindow(appName) {
                 <div class="linkedin-exp-content">
                   <h3 class="linkedin-exp-title">Diploma in Game Development & Technology</h3>
                   <p class="linkedin-exp-company">Nanyang Polytechnic</p>
-                  <p class="linkedin-exp-date">2024 – 2027</p>
+                  <p class="linkedin-exp-date">2023 – 2026</p>
                 </div>
               </div>
             </div>
@@ -1185,7 +1231,7 @@ openWindow(appName) {
               <h2 class="linkedin-section-title">Featured Projects</h2>
               <div class="linkedin-projects-grid">
                 <div class="linkedin-project-card">
-                  <div class="linkedin-project-thumb" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                  <div class="linkedin-project-thumb" style="background-image: url('assets/projects/wahhotsia.jpg'); background-size: cover; background-position: center;">
                     <span>WahHotSia</span>
                   </div>
                   <div class="linkedin-project-info">
@@ -1194,7 +1240,7 @@ openWindow(appName) {
                   </div>
                 </div>
                 <div class="linkedin-project-card">
-                  <div class="linkedin-project-thumb" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                  <div class="linkedin-project-thumb" style="background-image: url('assets/projects/wahhotsia.jpg'); background-size: cover; background-position: center;">
                     <span>Into the Canvas</span>
                   </div>
                   <div class="linkedin-project-info">
@@ -1203,7 +1249,7 @@ openWindow(appName) {
                   </div>
                 </div>
                 <div class="linkedin-project-card">
-                  <div class="linkedin-project-thumb" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                  <div class="linkedin-project-thumb" style="background-image: url('assets/projects/wahhotsia.jpg'); background-size: cover; background-position: center;">
                     <span>Vestige</span>
                   </div>
                   <div class="linkedin-project-info">

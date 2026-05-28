@@ -148,7 +148,6 @@ body {
   background-position: top center;
   background-repeat: no-repeat;
 
-
   overflow: hidden;
 }
 
@@ -244,20 +243,6 @@ body {
   pointer-events: auto;
 }
 
-.window::before {
-  content: '';
-  position: absolute;
-  top: -90px;
-  right: 120px;
-  width: 130px;
-  height: 130px;
-  background: url('assets/decor/tigerpng.png') no-repeat center;
-  background-size: contain;
-  pointer-events: none;
-  z-index: 80;
-  opacity: 1;
-}
-
 .window {
   position: absolute;
   top: 0;
@@ -289,7 +274,6 @@ body {
 #window-Demo-Reel .window-content {
   background: #151515 !important;
 }
-
 
 .window.dragging {
   opacity: 0.9;
@@ -914,8 +898,6 @@ body {
   transform: scale(1.02);
 }
 
-
-
 /* ============================================================
    DEMO REEL 
    ============================================================ */
@@ -1075,7 +1057,6 @@ body {
   text-align: right;
 }
 
-
 /* Resize handle indicator */
 .window::after {
   content: '';
@@ -1095,6 +1076,20 @@ body {
   display: none;
 }
 
+/* Window decoration element - per-window customizable */
+.window-decor {
+  position: absolute;
+  pointer-events: none;
+  z-index: 80;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Maximized windows hide the decoration */
+.window.maximized .window-decor {
+  display: none !important;
+}
 
 /* ==================== WINDOW RESIZE ==================== */
 .resize-handle {
@@ -1139,7 +1134,6 @@ body {
   transition: none !important;
   user-select: none;
 }
-
 
 /* ============================================================
    CERTIFICATES - Windows Photos Gallery Style
@@ -1550,7 +1544,6 @@ body {
   }
 }
 
-
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -1600,7 +1593,6 @@ body {
     display: none;
   }
 }
-
 
 /* ==================== RESIZE HANDLES ==================== */
 .resize-handle {
@@ -2011,7 +2003,6 @@ body {
     grid-template-columns: 1fr;
   }
 }
-
 
 /* ============================================================
    STEAM STORE PAGE - MY PROJECTS REDESIGN
