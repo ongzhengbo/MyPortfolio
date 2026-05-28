@@ -1,4 +1,63 @@
-﻿class DesktopApp {
+﻿// STEAM PROJECTS v2 - Cache bust: 1779978241.2868285
+const projectsData = [
+  {
+    id: 'wahhotsia',
+    title: 'WahHotSia',
+    shortDesc: "A social 3D room-building game where players design rooms, receive suggestions, visualize wind flow, and explore other players' creations.",
+    fullDesc: `WahHotSia is a social 3D room-building game where players design rooms, receive suggestions, visualize wind flow, and explore other players' creations.<br><br><strong>What I Did:</strong><ul><li>Built a 3D room-building system for interior design</li><li>Implemented suggestion system for layout improvements</li><li>Developed wind flow visualization feature</li><li>Created feature page for browsing user designs</li></ul>`,
+    tags: ['Unity', 'C#', '3D', 'Social'],
+    thumbnail: 'https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/watch?v=0uS9ZIcvuJA',
+    screenshots: ['https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg','https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg','https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg','https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg'],
+    status: 'Completed', year: '2026', team: 'Team Project', role: 'Gameplay Programmer', featured: true
+  },
+  {
+    id: 'intothecanvas',
+    title: 'Into the Canvas',
+    shortDesc: "An internship couch co-op project where players use paint mechanics to solve puzzles together.",
+    fullDesc: `Into the Canvas is an internship couch co-op project where players use paint mechanics to solve puzzles together.<br><br><strong>What I Did:</strong><ul><li>Designed modular UI system with reusable menus</li><li>Built custom UnityEvent-style system with multi-parameter support</li><li>Developed custom toon shaders for 3D models</li><li>Implemented player stats, timer, and settings systems</li><li>Added procedural mesh destruction compatible with any mesh</li></ul>`,
+    tags: ['Unity', 'C#', 'Internship', 'Co-op'],
+    thumbnail: 'https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/watch?v=kYTfj2U4430',
+    screenshots: ['https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg','https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg','https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg'],
+    status: 'Completed', year: '2025', team: 'Internship', role: 'Game Developer', featured: true
+  },
+  {
+    id: 'vestige',
+    title: 'Vestige',
+    shortDesc: "A story-driven 3D side-scroller in Unreal Engine with dream-like environments and emotional progression.",
+    fullDesc: `Vestige is a story-driven 3D side-scroller in Unreal Engine with dream-like environments and emotional progression.<br><br><strong>What I Did:</strong><ul><li>Implemented player movement: push/pull, hang, climb, elevators</li><li>Developed advanced camera systems with dead-zones and dynamic FOV</li><li>Built interaction, item inspection, and quest systems</li><li>Created saving/loading systems and full game UI</li></ul>`,
+    tags: ['Unreal Engine', 'C++', 'Blueprints', '3D'],
+    thumbnail: 'https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/watch?v=ULQUVjG7M-s',
+    screenshots: ['https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg','https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg','https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg'],
+    status: 'Completed', year: '2025', team: 'Student Project', role: 'Gameplay Programmer', featured: true
+  },
+  {
+    id: 'echoes',
+    title: 'Echoes Of Virtue',
+    shortDesc: "A group project based on sustainability goals of peace, justice, and strong institutions.",
+    fullDesc: `Echoes Of Virtue is a group project based on sustainability goals of peace, justice, and strong institutions.<br><br><strong>What I Did:</strong><ul><li>Implemented player controller and core gameplay systems</li><li>Built world-switching mechanics between past and future</li><li>Developed scene-transition doors and interactive elements</li><li>Created enemies, moving platforms, and multiple gameplay levels</li></ul>`,
+    tags: ['Unity', 'C#', '2D', 'Group Project'],
+    thumbnail: 'https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/watch?v=8CkgqogTGeM',
+    screenshots: ['https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg','https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg'],
+    status: 'Completed', year: '2024', team: 'Group Project', role: 'Programmer', featured: false
+  },
+  {
+    id: 'boat',
+    title: 'Boat',
+    shortDesc: "A group project based on the open-world survival genre.",
+    fullDesc: `Boat is a group project based on the open-world survival genre.<br><br><strong>What I Did:</strong><ul><li>Designed and implemented game UI</li><li>Extended framework's scene manager for multiple scenes</li><li>Enabled parallel level development for open-world gameplay</li><li>Created cutscenes and physics-based systems</li><li>Designed and built the OilRig level</li></ul>`,
+    tags: ['C++', 'OpenGL', 'Open World', 'Survival'],
+    thumbnail: 'https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/watch?v=P6keUXjFF40',
+    screenshots: ['https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg','https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg'],
+    status: 'Completed', year: '2023', team: 'Group Project', role: 'Programmer & UI Designer', featured: false
+  }
+];
+
+class DesktopApp {
   constructor() {
     this.openWindows = new Map();
     this.draggedWindow = null;
@@ -781,6 +840,234 @@ openWindow(appName) {
   }
 
   // ==================== CONTENT ====================
+  
+  // ==================== STEAM PROJECTS RENDERER ====================
+  renderSteamProjects() {
+    const featured = projectsData.filter(p => p.featured);
+    const all = projectsData;
+    return `
+      <div class="page-shell">
+        <div class="app-bar">
+          <img src="assets/icons/my-projects.png" class="app-bar-icon" alt="" onerror="this.style.display='none'">
+          <span class="app-bar-title">My Projects</span>
+        </div>
+        <div class="app-content" style="padding:0;">
+          <div class="steam-store-header">
+            <div class="steam-nav-bar">
+              <div class="steam-nav-item active">Your Store</div>
+              <div class="steam-nav-item">New & Noteworthy</div>
+              <div class="steam-nav-item">Categories</div>
+              <div class="steam-nav-item">Points Shop</div>
+              <div class="steam-nav-item">News</div>
+              <div class="steam-nav-item">Labs</div>
+            </div>
+            <div class="steam-featured-section">
+              <div class="steam-section-title">Featured & Recommended</div>
+              ${this.renderSteamHero(featured[0] || all[0])}
+              <div class="steam-carousel-nav">
+                ${featured.map((_, i) => `<button class="steam-carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="window.desktopAppInstance.setSteamHero(${i})"></button>`).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="steam-games-section">
+            <div class="steam-section-title">All Projects (${all.length})</div>
+            <div class="steam-games-grid">
+              ${all.map(project => this.renderSteamCard(project)).join('')}
+            </div>
+          </div>
+          <div class="steam-detail-page" id="steamDetailPage">
+            ${this.renderSteamDetail()}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  renderSteamHero(project) {
+    return `
+      <div class="steam-hero-container" id="steamHero" data-project-id="${project.id}">
+        <div class="steam-hero-media">
+          <img src="${project.thumbnail}" alt="${project.title}" loading="lazy">
+        </div>
+        <div class="steam-hero-info">
+          <div class="steam-hero-title">${project.title}</div>
+          <div class="steam-hero-screenshots">
+            ${project.screenshots.slice(0, 4).map(s => `<img src="${s}" alt="screenshot" loading="lazy">`).join('')}
+          </div>
+          <div class="steam-hero-desc">${project.shortDesc}</div>
+          <div class="steam-hero-tags">
+            ${project.tags.map(tag => `<span class="steam-tag">${tag}</span>`).join('')}
+          </div>
+          <div class="steam-hero-meta">
+            <div>Status: <span>${project.status}</span></div>
+            <div>Year: <span>${project.year}</span></div>
+            <div>Team: <span>${project.team}</span></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  renderSteamCard(project) {
+    return `
+      <div class="steam-game-card" data-project-id="${project.id}" onclick="window.desktopAppInstance.openSteamDetail('${project.id}')">
+        <div class="steam-game-thumb">
+          <img src="${project.thumbnail}" alt="${project.title}" loading="lazy">
+          <div class="steam-game-platforms">
+            <span class="steam-platform-icon">🎮</span>
+            <span class="steam-platform-icon">💻</span>
+          </div>
+        </div>
+        <div class="steam-game-info">
+          <div class="steam-game-title">${project.title}</div>
+          <div class="steam-game-desc">${project.shortDesc}</div>
+          <div class="steam-game-tags">
+            ${project.tags.slice(0, 3).map(tag => `<span class="steam-game-tag">${tag}</span>`).join('')}
+          </div>
+          <div class="steam-game-bottom">
+            <div class="steam-game-price">
+              <span class="steam-price-final">${project.year}</span>
+            </div>
+            <a href="${project.videoUrl}" target="_blank" rel="noopener" class="steam-btn-green" onclick="event.stopPropagation()">
+              ▶ Watch
+            </a>
+          </div>
+        </div>
+        <div class="steam-game-hover-panel">
+          <div class="steam-hover-title">${project.title}</div>
+          <div class="steam-hover-reviews">
+            <span class="steam-review-summary">${project.status}</span>
+            <span class="steam-review-count">${project.team}</span>
+          </div>
+          <div class="steam-hover-tags">
+            ${project.tags.map(tag => `<span class="steam-tag">${tag}</span>`).join('')}
+          </div>
+          <div class="steam-hover-screenshots">
+            ${project.screenshots.slice(0, 4).map(s => `<img src="${s}" alt="screenshot" loading="lazy">`).join('')}
+          </div>
+          <div class="steam-hover-desc">${project.shortDesc}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  renderSteamDetail() {
+    return `
+      <div class="steam-detail-header">
+        <div class="steam-breadcrumb">
+          <a href="#" onclick="window.desktopAppInstance.backToSteamGrid(); return false;">All Projects</a> &gt; <span id="steamBreadcrumbTitle">Project</span>
+        </div>
+        <div class="steam-detail-title" id="steamDetailTitle">Project Title</div>
+      </div>
+      <div class="steam-detail-layout">
+        <div class="steam-detail-left">
+          <div class="steam-detail-media">
+            <img src="" alt="" id="steamDetailMedia">
+          </div>
+          <div class="steam-detail-thumbs" id="steamDetailThumbs"></div>
+          <div class="steam-detail-desc" id="steamDetailDesc"></div>
+        </div>
+        <div class="steam-detail-right">
+          <div class="steam-detail-sidebar">
+            <img src="" alt="" id="steamDetailSidebarImg">
+            <div class="steam-detail-meta-row">
+              <span class="steam-detail-meta-label">Status</span>
+              <span class="steam-detail-meta-value" id="steamDetailStatus"></span>
+            </div>
+            <div class="steam-detail-meta-row">
+              <span class="steam-detail-meta-label">Year</span>
+              <span class="steam-detail-meta-value" id="steamDetailYear"></span>
+            </div>
+            <div class="steam-detail-meta-row">
+              <span class="steam-detail-meta-label">Team</span>
+              <span class="steam-detail-meta-value" id="steamDetailTeam"></span>
+            </div>
+            <div class="steam-detail-meta-row">
+              <span class="steam-detail-meta-label">Role</span>
+              <span class="steam-detail-meta-value" id="steamDetailRole"></span>
+            </div>
+            <div class="steam-detail-meta-row">
+              <span class="steam-detail-meta-label">Tags</span>
+              <span class="steam-detail-meta-value" id="steamDetailTags"></span>
+            </div>
+            <div class="steam-detail-actions">
+              <a href="#" target="_blank" rel="noopener" class="steam-btn-primary" id="steamDetailVideoBtn">
+                ▶ Watch Trailer
+              </a>
+              <button class="steam-btn-secondary" onclick="window.desktopAppInstance.backToSteamGrid()">
+                ← Back to Projects
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  setSteamHero(index) {
+    const featured = projectsData.filter(p => p.featured);
+    const project = featured[index];
+    if (!project) return;
+    const hero = document.getElementById('steamHero');
+    if (!hero) return;
+    hero.dataset.projectId = project.id;
+    hero.querySelector('.steam-hero-media img').src = project.thumbnail;
+    hero.querySelector('.steam-hero-title').textContent = project.title;
+    hero.querySelector('.steam-hero-desc').textContent = project.shortDesc;
+    hero.querySelector('.steam-hero-tags').innerHTML = project.tags.map(tag => `<span class="steam-tag">${tag}</span>`).join('');
+    hero.querySelector('.steam-hero-screenshots').innerHTML = project.screenshots.slice(0, 4).map(s => `<img src="${s}" alt="screenshot" loading="lazy">`).join('');
+    document.querySelectorAll('.steam-carousel-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+  }
+
+  openSteamDetail(projectId) {
+    const project = projectsData.find(p => p.id === projectId);
+    if (!project) return;
+    const content = document.querySelector('#window-My-Projects .window-content');
+    if (!content) return;
+    const grid = content.querySelector('.steam-store-header');
+    const gamesSection = content.querySelector('.steam-games-section');
+    const detailPage = content.querySelector('#steamDetailPage');
+    if (grid) grid.style.display = 'none';
+    if (gamesSection) gamesSection.style.display = 'none';
+    if (detailPage) {
+      detailPage.classList.add('active');
+      document.getElementById('steamBreadcrumbTitle').textContent = project.title;
+      document.getElementById('steamDetailTitle').textContent = project.title;
+      document.getElementById('steamDetailMedia').src = project.thumbnail;
+      document.getElementById('steamDetailSidebarImg').src = project.thumbnail;
+      document.getElementById('steamDetailStatus').textContent = project.status;
+      document.getElementById('steamDetailYear').textContent = project.year;
+      document.getElementById('steamDetailTeam').textContent = project.team;
+      document.getElementById('steamDetailRole').textContent = project.role;
+      document.getElementById('steamDetailTags').innerHTML = project.tags.map(t => `<span class="steam-tag">${t}</span>`).join(' ');
+      document.getElementById('steamDetailVideoBtn').href = project.videoUrl;
+      document.getElementById('steamDetailDesc').innerHTML = `<h3>About This Project</h3>${project.fullDesc}`;
+      const thumbsContainer = document.getElementById('steamDetailThumbs');
+      thumbsContainer.innerHTML = project.screenshots.map((s, i) => `<img src="${s}" alt="screenshot" class="${i === 0 ? 'active' : ''}" onclick="window.desktopAppInstance.setSteamDetailMedia('${s}')">`).join('');
+    }
+  }
+
+  setSteamDetailMedia(src) {
+    const media = document.getElementById('steamDetailMedia');
+    if (media) media.src = src;
+    document.querySelectorAll('#steamDetailThumbs img').forEach(img => {
+      img.classList.toggle('active', img.src === src);
+    });
+  }
+
+  backToSteamGrid() {
+    const content = document.querySelector('#window-My-Projects .window-content');
+    if (!content) return;
+    const grid = content.querySelector('.steam-store-header');
+    const gamesSection = content.querySelector('.steam-games-section');
+    const detailPage = content.querySelector('#steamDetailPage');
+    if (grid) grid.style.display = 'block';
+    if (gamesSection) gamesSection.style.display = 'block';
+    if (detailPage) detailPage.classList.remove('active');
+  }
+
   getContentForApp(appName) {
     switch(appName) {
       case 'About Me':
@@ -929,153 +1216,9 @@ openWindow(appName) {
           </div>`;
 
       case 'My Projects':
-        return `
-          <div class="page-shell">
-            <div class="app-bar">
-              <img src="assets/icons/my-projects.png" class="app-bar-icon" alt="" onerror="this.style.display='none'">
-              <span class="app-bar-title">My Projects</span>
+        return this.renderSteamProjects();
 
-            </div>
-            <div class="app-content">
-              <div class="material-grid">
-
-                <div class="material-card">
-                  <div class="material-card-title">WahHotSia</div>
-                  <div class="material-card-text">A social 3D room-building game where players design rooms, receive suggestions, visualize wind flow, and explore other players' creations.</div>
-                  <div class="accordion">
-                    <button class="accordion-header">
-                      <span>What I Did</span>
-                      <span class="accordion-arrow">▼</span>
-                    </button>
-                    <div class="accordion-body">
-                      <ul>
-                        <li>Built a 3D room-building system for interior design</li>
-                        <li>Implemented suggestion system for layout improvements</li>
-                        <li>Developed wind flow visualization feature</li>
-                        <li>Created feature page for browsing user designs</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div style="margin-top:12px;">
-                    <span class="chip chip-blue">Unity</span>
-                    <span class="chip chip-green">C#</span>
-                  </div>
-                  <a href="https://www.youtube.com/watch?v=0uS9ZIcvuJA" target="_blank" rel="noopener" class="thumb-link">
-                    <img src="https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg" alt="WahHotSia">
-                  </a>
-                </div>
-
-                <div class="material-card">
-                  <div class="material-card-title">Into the Canvas</div>
-                  <div class="material-card-text">An internship couch co-op project where players use paint mechanics to solve puzzles together.</div>
-                  <div class="accordion">
-                    <button class="accordion-header">
-                      <span>What I Did</span>
-                      <span class="accordion-arrow">▼</span>
-                    </button>
-                    <div class="accordion-body">
-                      <ul>
-                        <li>Designed modular UI system with reusable menus</li>
-                        <li>Built custom UnityEvent-style system with multi-parameter support</li>
-                        <li>Developed custom toon shaders for 3D models</li>
-                        <li>Implemented player stats, timer, and settings systems</li>
-                        <li>Added procedural mesh destruction compatible with any mesh</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div style="margin-top:12px;">
-                    <span class="chip chip-blue">Unity</span>
-                    <span class="chip chip-green">C#</span>
-                    <span class="chip chip-yellow">Internship</span>
-                  </div>
-                  <a href="https://www.youtube.com/watch?v=kYTfj2U4430" target="_blank" rel="noopener" class="thumb-link">
-                    <img src="https://img.youtube.com/vi/kYTfj2U4430/hqdefault.jpg" alt="Into the Canvas">
-                  </a>
-                </div>
-
-                <div class="material-card">
-                  <div class="material-card-title">Vestige</div>
-                  <div class="material-card-text">A story-driven 3D side-scroller in Unreal Engine with dream-like environments and emotional progression.</div>
-                  <div class="accordion">
-                    <button class="accordion-header">
-                      <span>What I Did</span>
-                      <span class="accordion-arrow">▼</span>
-                    </button>
-                    <div class="accordion-body">
-                      <ul>
-                        <li>Implemented player movement: push/pull, hang, climb, elevators</li>
-                        <li>Developed advanced camera systems with dead-zones and dynamic FOV</li>
-                        <li>Built interaction, item inspection, and quest systems</li>
-                        <li>Created saving/loading systems and full game UI</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div style="margin-top:12px;">
-                    <span class="chip chip-red">Unreal Engine</span>
-                  </div>
-                  <a href="https://www.youtube.com/watch?v=ULQUVjG7M-s" target="_blank" rel="noopener" class="thumb-link">
-                    <img src="https://img.youtube.com/vi/ULQUVjG7M-s/hqdefault.jpg" alt="Vestige">
-                  </a>
-                </div>
-
-                <div class="material-card">
-                  <div class="material-card-title">Echoes Of Virtue</div>
-                  <div class="material-card-text">A group project based on sustainability goals of peace, justice, and strong institutions.</div>
-                  <div class="accordion">
-                    <button class="accordion-header">
-                      <span>What I Did</span>
-                      <span class="accordion-arrow">▼</span>
-                    </button>
-                    <div class="accordion-body">
-                      <ul>
-                        <li>Implemented player controller and core gameplay systems</li>
-                        <li>Built world-switching mechanics between past and future</li>
-                        <li>Developed scene-transition doors and interactive elements</li>
-                        <li>Created enemies, moving platforms, and multiple gameplay levels</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div style="margin-top:12px;">
-                    <span class="chip chip-blue">Unity</span>
-                    <span class="chip chip-green">C#</span>
-                  </div>
-                  <a href="https://www.youtube.com/watch?v=8CkgqogTGeM" target="_blank" rel="noopener" class="thumb-link">
-                    <img src="https://img.youtube.com/vi/8CkgqogTGeM/hqdefault.jpg" alt="Echoes Of Virtue">
-                  </a>
-                </div>
-
-                <div class="material-card">
-                  <div class="material-card-title">Boat</div>
-                  <div class="material-card-text">A group project based on the open-world survival genre.</div>
-                  <div class="accordion">
-                    <button class="accordion-header">
-                      <span>What I Did</span>
-                      <span class="accordion-arrow">▼</span>
-                    </button>
-                    <div class="accordion-body">
-                      <ul>
-                        <li>Designed and implemented game UI</li>
-                        <li>Extended framework's scene manager for multiple scenes</li>
-                        <li>Enabled parallel level development for open-world gameplay</li>
-                        <li>Created cutscenes and physics-based systems</li>
-                        <li>Designed and built the OilRig level</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div style="margin-top:12px;">
-                    <span class="chip chip-yellow">C++</span>
-                    <span class="chip chip-green">OpenGL</span>
-                  </div>
-                  <a href="https://www.youtube.com/watch?v=P6keUXjFF40" target="_blank" rel="noopener" class="thumb-link">
-                    <img src="https://img.youtube.com/vi/P6keUXjFF40/hqdefault.jpg" alt="Boat">
-                  </a>
-                </div>
-
-              </div>
-            </div>
-          </div>`;
-
-            case 'Certificate':
+      case 'Certificate':
         return `
           <div class="page-shell">
             <div class="app-bar">
