@@ -914,19 +914,7 @@ body {
   transform: scale(1.02);
 }
 
-/* Certificate images */
-.cert-img {
-  width: 100%;
-  border-radius: 8px;
-  border: 1px solid #dadce0;
-  display: block;
-  margin-top: 12px;
-  transition: box-shadow 0.2s;
-}
 
-.cert-img:hover {
-  box-shadow: 0 2px 8px rgba(60,64,67,0.1);
-}
 
 /* ============================================================
    DEMO REEL 
@@ -1151,6 +1139,417 @@ body {
   transition: none !important;
   user-select: none;
 }
+
+
+/* ============================================================
+   CERTIFICATES - Windows Photos Gallery Style
+   ============================================================ */
+
+/* Dark gallery background */
+#window-Certificate .window-content {
+  background: #1e1e1e !important;
+}
+
+#window-Certificate .page-shell {
+  background: #1e1e1e;
+}
+
+/* Gallery header bar */
+#window-Certificate .app-bar {
+  background: #2d2d2d;
+  border-bottom: 1px solid #3a3a3a;
+  height: 48px;
+  padding: 0 20px;
+}
+
+#window-Certificate .app-bar-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+#window-Certificate .app-bar-icon {
+  filter: brightness(1.2);
+}
+
+/* Gallery toolbar */
+.gallery-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #1e1e1e;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.gallery-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gallery-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gallery-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #cccccc;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gallery-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: #ffffff;
+}
+
+.gallery-btn.active {
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
+}
+
+.gallery-count {
+  color: #888888;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.gallery-divider {
+  width: 1px;
+  height: 20px;
+  background: #3a3a3a;
+  margin: 0 4px;
+}
+
+/* Photo grid - masonry style like Photos app */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 4px;
+  padding: 4px;
+  background: #1e1e1e;
+}
+
+.gallery-grid.compact {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 2px;
+}
+
+.gallery-grid.large {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 8px;
+  padding: 8px;
+}
+
+/* Photo item container */
+.gallery-photo-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  background: #2a2a2a;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  group: true;
+}
+
+.gallery-photo-item:hover {
+  transform: scale(1.02);
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.gallery-photo-item:hover .gallery-photo-overlay {
+  opacity: 1;
+}
+
+.gallery-photo-item:hover .gallery-select-btn {
+  opacity: 1;
+}
+
+/* Photo image */
+.gallery-photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.gallery-photo-item:hover img {
+  transform: scale(1.05);
+}
+
+/* Photo overlay on hover */
+.gallery-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 12px;
+}
+
+/* Photo info at bottom */
+.gallery-photo-info {
+  color: #ffffff;
+}
+
+.gallery-photo-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gallery-photo-date {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
+/* Selection checkbox */
+.gallery-select-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 50%;
+  background: rgba(0,0,0,0.3);
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-select-btn:hover {
+  border-color: #ffffff;
+  background: rgba(0,0,0,0.5);
+}
+
+.gallery-select-btn.selected {
+  opacity: 1;
+  background: #0078d4;
+  border-color: #0078d4;
+}
+
+.gallery-select-btn.selected::after {
+  content: '✓';
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Date group headers */
+.gallery-date-group {
+  grid-column: 1 / -1;
+  padding: 16px 8px 8px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.gallery-date-group:first-child {
+  padding-top: 8px;
+}
+
+.gallery-date-sub {
+  font-size: 13px;
+  color: #888888;
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+/* View toggle buttons */
+.view-toggle {
+  display: flex;
+  gap: 2px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.view-toggle-btn {
+  width: 32px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #888888;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+
+.view-toggle-btn:hover {
+  color: #ffffff;
+  background: rgba(255,255,255,0.08);
+}
+
+.view-toggle-btn.active {
+  color: #ffffff;
+  background: rgba(255,255,255,0.12);
+}
+
+/* Scrollbar styling for dark theme */
+#window-Certificate .window-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+#window-Certificate .window-content::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+#window-Certificate .window-content::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 4px;
+}
+
+#window-Certificate .window-content::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+/* Photo viewer modal (lightbox style) */
+.photo-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.photo-viewer-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.photo-viewer-content {
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.photo-viewer-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.photo-viewer-info {
+  margin-top: 16px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.photo-viewer-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.photo-viewer-meta {
+  font-size: 13px;
+  color: #888888;
+}
+
+.photo-viewer-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.photo-viewer-close:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Navigation arrows in viewer */
+.photo-viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.photo-viewer-nav:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.photo-viewer-nav.prev { left: 20px; }
+.photo-viewer-nav.next { right: 20px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 2px;
+    padding: 2px;
+  }
+
+  .gallery-toolbar {
+    padding: 8px 12px;
+  }
+
+  .gallery-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+}
+
 
 /* ============================================================
    RESPONSIVE
