@@ -134,21 +134,34 @@ class CertificateApp {
 
     let currentIndex = 0;
 
-    const openViewer = (index) => {
-      currentIndex = index;
-      const cert = certs[index];
-      viewerImg.src = cert.src;
-      viewerTitle.textContent = cert.title;
-      viewerDate.textContent = cert.date;
-      viewer.classList.add('active');
-    };
+const certificateWindow = grid.closest('.window');
 
-    const closeViewer = () => {
-      viewer.classList.remove('active');
-      setTimeout(() => {
-        viewerImg.src = '';
-      }, 300);
-    };
+const openViewer = (index) => {
+  currentIndex = index;
+  const cert = certs[index];
+
+  viewerImg.src = cert.src;
+  viewerTitle.textContent = cert.title;
+  viewerDate.textContent = cert.date;
+
+  if (certificateWindow) {
+    certificateWindow.classList.add('photo-viewer-open');
+  }
+
+  viewer.classList.add('active');
+};
+
+const closeViewer = () => {
+  viewer.classList.remove('active');
+
+  if (certificateWindow) {
+    certificateWindow.classList.remove('photo-viewer-open');
+  }
+
+  setTimeout(() => {
+    viewerImg.src = '';
+  }, 300);
+};
 
     const showPrev = () => {
       currentIndex = (currentIndex - 1 + certs.length) % certs.length;

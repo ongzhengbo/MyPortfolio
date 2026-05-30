@@ -389,6 +389,23 @@
 .photo-viewer-nav.prev { left: 20px; }
 .photo-viewer-nav.next { right: 20px; }
 
+/* ============================================================
+Certifcate window Hider
+   ============================================================ */
+
+#window-Certificate.photo-viewer-open .window-decor {
+  display: none !important;
+}
+
+#window-Certificate.photo-viewer-open .window-content {
+  z-index: 90;
+  overflow: visible;
+}
+
+#window-Certificate.photo-viewer-open .window-header {
+  z-index: 1;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .gallery-grid {
