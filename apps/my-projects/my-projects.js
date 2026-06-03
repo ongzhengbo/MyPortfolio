@@ -5,8 +5,8 @@ const projectsData = [
     id: 'wahhotsia',
     title: 'WahHotSia',
     shortDesc: "A social 3D room-building game where players design rooms, receive suggestions, visualize wind flow, and explore other players' creations.",
-    fullDesc: `WahHotSia is a social 3D room-building game where players design rooms, receive suggestions, visualize wind flow, and explore other players' creations.<br><br><strong>What I Did:</strong><ul><li>Built a 3D room-building system for interior design</li><li>Implemented suggestion system for layout improvements</li><li>Developed wind flow visualization feature</li><li>Created feature page for browsing user designs</li></ul>`,
-    tags: ['Unity', 'C#', '3D', 'Social'],
+    fullDesc: `WahHotSia is a social 3D room-building game where players design rooms, save and load their creations, receive suggestions, visualize wind flow, and explore other players' creations.<br><br><strong>What I Did:</strong><ul><li>Built a 3D room-building system for interior design</li><li>Implemented saving and loading for room designs</li><li>Implemented suggestion system for layout improvements</li><li>Developed wind flow visualization feature</li><li>Created feature page for browsing user room designs</li></ul>`,
+    tags: ['Unity', 'C#', '3D', 'Social', 'SQl', 'Database', 'Json'],
     images: [
       'https://img.youtube.com/vi/0uS9ZIcvuJA/hqdefault.jpg',
       'assets/projects/wahhotsia/screenshot-1.png',
